@@ -373,8 +373,8 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(280px);
-  opacity: 0.2;
+  filter: blur(220px);
+  opacity: 0.4;
   animation: float 20s ease-in-out infinite;
 }
 
@@ -1434,12 +1434,19 @@ Bruk: <span class="string">/review-ticket ENG-123</span>
   <div style="text-align:left;margin-top:2rem">
     <p style="margin-bottom:1rem;font-size:1.4rem"><span style="color:var(--mint)">Ole Ravna</span></p>
     <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Webstep &amp; Evenly</p>
-    <p style="margin-top:2rem">
-      <span class="badge badge-mint" style="font-size:1.1rem;padding:0.5rem 1rem">github.com/evenly-energy/lisa</span>
-    </p>
   </div>
-  <div style="position:absolute;bottom:2rem;left:2rem;background:white;padding:0.5rem;border-radius:8px">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa" alt="QR code to Lisa repo" style="display:block">
+  <div style="position:absolute;bottom:2rem;left:2rem;text-align:center">
+    <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Repo</p>
+    <div style="background:white;padding:0.5rem;border-radius:8px;display:inline-block">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa" alt="QR code to Lisa repo" style="display:block">
+    </div>
+    <p style="font-size:0.8rem;margin-top:0.5rem;opacity:0.8">github.com/evenly-energy/lisa</p>
+  </div>
+  <div style="position:absolute;bottom:2rem;right:2rem;text-align:center">
+    <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Gi tilbakemelding</p>
+    <div style="background:white;padding:0.5rem;border-radius:8px;display:inline-block">
+      <img src="feedback-qr.png" alt="QR code for feedback" style="display:block;width:120px;height:120px">
+    </div>
   </div>
 </div>
 
