@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Code — Fra chatbot til byggeblokk</title>
+<title>Claude Code — Fra chatbot til (nokså) selvdrevet utvikler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
@@ -428,13 +428,24 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
      ════════════════════════════════════════════ -->
 
 <!-- Slide 1: Title -->
-<div class="slide active" data-notes="Introduser deg: Ole Ravna, konsulent i Webstep, grunder av Evenly. Tema i dag: Claude Code — ikke bare en chatbot, men en byggeblokk for automatisering.">
+<div class="slide active" data-notes="Introduser deg: Ole Ravna, konsulent i Webstep, grunder av Evenly. Tema i dag: Claude Code — ikke bare en chatbot, men en (nokså) selvdrevet utvikler for automatisering.">
   <h1 style="font-size:clamp(3rem,7vw,5.5rem)">Claude Code</h1>
-  <p class="subtitle">Fra chatbot til byggeblokk</p>
+  <p class="subtitle">Fra chatbot til (nokså) selvdrevet utvikler</p>
   <p class="muted" style="margin-top:2rem">Ole Ravna</p>
 </div>
 
-<!-- Slide 2: Hva er Claude Code? -->
+<!-- Slide 2: Disclaimer -->
+<div class="slide" data-notes="Viktig forebehold: hele presentasjonen er et eksperiment i AI-generert innhold.">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;height:100%">
+    <img src="disclaimer.png" alt="AI eksperiment" style="max-width:600px;width:90%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.15)">
+    <p style="font-size:clamp(1.1rem,2.5vw,1.6rem);text-align:center;max-width:800px;line-height:1.6">
+      <span class="badge badge-mint">Forebehold</span>: hele denne presentasjonen er et eksperiment i AI.<br>
+      Alle slidene er laget i ren HTML med ren vibing.
+    </p>
+  </div>
+</div>
+
+<!-- Slide 3: Hva er Claude Code? -->
 <div class="slide" data-notes="Claude Code er Anthropics offisielle CLI-verktøy. Det er en agentic coding-agent som kjører i terminalen med full tilgang til filsystemet. Den kan lese, skrive, kjøre kommandoer og ta beslutninger autonomt.">
   <h2>Hva er Claude Code?</h2>
   <p style="margin-bottom:1.5rem">En AI-agent i terminalen med full tilgang til filsystemet ditt.</p>
@@ -563,29 +574,24 @@ Du beskriver →  AI planlegger
       </div>
     </div>
     <div>
-      <div class="terminal small">
+      <div class="terminal small" style="max-width:none">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
           <span class="terminal-title">CLAUDE.md</span>
         </div>
-        <div class="terminal-body">
+        <div class="terminal-body" style="white-space:pre">
 <span class="comment"># Code Style</span>
-<br>
-<br>Never use fully qualified class
-<br>names - always use imports
-<br>
-<br><span class="error">❌ BAD:</span>
-<br><span class="keyword">val</span> event = <span class="muted">no.evenly</span>
-<br><span class="muted">&nbsp;&nbsp;.domain.events.</span>
-<br><span class="muted">&nbsp;&nbsp;</span>PortfolioCreatedEvent()
-<br>
-<br><span class="success">✅ GOOD:</span>
-<br><span class="keyword">import</span> no.evenly.domain
-<br>&nbsp;&nbsp;.events.PortfolioCreatedEvent
-<br><span class="keyword">val</span> event =
-<br>&nbsp;&nbsp;PortfolioCreatedEvent()
+
+Never use fully qualified class names - always use imports
+
+<span class="error">❌ BAD:</span>
+<span class="keyword">val</span> event = <span class="muted">no.evenly.domain.events.</span>PortfolioCreatedEvent()
+
+<span class="success">✅ GOOD:</span>
+<span class="keyword">import</span> no.evenly.domain.events.PortfolioCreatedEvent
+<span class="keyword">val</span> event = PortfolioCreatedEvent()
         </div>
       </div>
     </div>
@@ -596,25 +602,25 @@ Du beskriver →  AI planlegger
 <div class="slide" data-notes="Custom agents er slash-commands du definerer selv i .claude/agents/. Hver agent har sin egen systemmelding og verktøy. Perfekt for repetitive oppgaver som code review eller testgenerering.">
   <h2>Custom Agents</h2>
   <p style="margin-bottom:1rem">Egendefinerte slash-commands i <span class="badge badge-mint">.claude/agents/</span></p>
-  <div class="terminal small">
+  <div class="terminal small" style="max-width:800px">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
       <div class="terminal-dot yellow"></div>
       <div class="terminal-dot green"></div>
       <span class="terminal-title">.claude/agents/review.md</span>
     </div>
-    <div class="terminal-body">
+    <div class="terminal-body" style="white-space:pre">
 <span class="comment"># Code Review Agent</span>
-<br>
-<br>Du er en senior code reviewer.
-<br>
-<br>Sjekk alltid:
-<br>1. Typesikkerhet og null-håndtering
-<br>2. Testdekning for nye funksjoner
-<br>3. Ytelse og N+1 queries
-<br>4. Sikkerhetsproblemer (OWASP Top 10)
-<br>
-<br>Gi output som en liste med funn.
+
+Du er en senior code reviewer.
+
+Sjekk alltid:
+1. Typesikkerhet og null-håndtering
+2. Testdekning for nye funksjoner
+3. Ytelse og N+1 queries
+4. Sikkerhetsproblemer (OWASP Top 10)
+
+Gi output som en liste med funn.
     </div>
   </div>
   <p class="muted" style="margin-top:0.8rem">Bruk: <span class="badge badge-mint">/review</span> i Claude Code</p>
@@ -626,21 +632,22 @@ Du beskriver →  AI planlegger
   <p style="margin-bottom:1.5rem">Gjenbrukbar kontekst &mdash; pakket domenekunnskap.</p>
   <div class="two-col">
     <div>
-      <div class="terminal small">
+      <div class="terminal small" style="max-width:none">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
           <span class="terminal-title">.claude/skills/review-ticket/SKILL.md</span>
         </div>
-        <div class="terminal-body">
+        <div class="terminal-body" style="white-space:pre">
 <span class="comment"># /review-ticket</span>
-<br>
-<br>Hent ticket fra Linear via MCP.
-<br>Analyser om beskrivelsen matcher koden.
-<br>Foreslå implementasjonssteg.
-<br>
-<br>Bruk: <span class="string">/review-ticket ENG-123</span>
+
+Hent ticket fra Linear via MCP.
+Hent relevant dokumentasjon fra kjente kilder.
+Analyser om beskrivelsen matcher koden.
+Foreslå implementasjonssteg.
+
+Bruk: <span class="string">/review-ticket ENG-123</span>
         </div>
       </div>
     </div>
@@ -670,14 +677,14 @@ Du beskriver →  AI planlegger
 {
 <br>  <span class="string">"plugins"</span>: [
 <br>    <span class="string">"@anthropic/plugin-playwright"</span>,
-<br>    <span class="string">"@anthropic/plugin-jupyter"</span>
+<br>    <span class="string">"@anthropic/plugin-frontend-design"</span>
 <br>  ]
 <br>}
     </div>
   </div>
   <ul style="margin-top:1rem">
     <li>Browser-testing med Playwright</li>
-    <li>Jupyter notebook-redigering</li>
+    <li>Generering av frontend-design</li>
     <li>Community-plugins via npm</li>
   </ul>
 </div>
@@ -778,7 +785,7 @@ Du beskriver →  AI planlegger
      ════════════════════════════════════════════ -->
 
 <!-- Slide 13: Section title -->
-<div class="slide section-title" data-notes="Nå kommer vi til det som virkelig er game-changer: headless mode. Dette er det som gjør Claude Code til en byggeblokk, ikke bare et interaktivt verktøy.">
+<div class="slide section-title" data-notes="Nå kommer vi til det som virkelig er game-changer: headless mode. Dette er det som gjør Claude Code til en (nokså) selvdrevet utvikler, ikke bare et interaktivt verktøy.">
   <h1>Automatisering<br>med headless mode</h1>
 </div>
 
@@ -882,7 +889,7 @@ Du beskriver →  AI planlegger
 </div>
 
 <!-- Slide 17: Structured output example with output -->
-<div class="slide" data-notes="Strukturert output gjør Claude til en byggeblokk. Du definerer et JSON-schema, og Claude returnerer alltid data i det formatet. Perfekt for pipelines og automatisering.">
+<div class="slide" data-notes="Strukturert output gjør Claude til en (nokså) selvdrevet utvikler. Du definerer et JSON-schema, og Claude returnerer alltid data i det formatet. Perfekt for pipelines og automatisering.">
   <h2>Strukturert output</h2>
   <div class="two-col" style="margin-top:1rem;grid-template-columns:1.5fr 1fr">
     <div>
@@ -968,7 +975,7 @@ Du beskriver →  AI planlegger
 </div>
 
 <!-- Slide 21: Harness concept -->
-<div class="slide" data-notes="Et harness er scriptet ditt rundt Claude. Det henter oppgaven, bygger prompten, kjører Claude, parser output, validerer, og prøver på nytt om nødvendig. Du eier logikken — Claude er bare en byggeblokk.">
+<div class="slide" data-notes="Et harness er scriptet ditt rundt Claude. Det henter oppgaven, bygger prompten, kjører Claude, parser output, validerer, og prøver på nytt om nødvendig. Du eier logikken — Claude er bare en (nokså) selvdrevet utvikler.">
   <h2>Harness-konseptet</h2>
   <p style="margin-bottom:1rem">Din logikk rundt Claude &mdash; du eier flyten.</p>
   <div class="flow">
@@ -1035,56 +1042,7 @@ Du beskriver →  AI planlegger
 </div>
 
 <!-- ════════════════════════════════════════════
-     DEL 4: REMOTE (23-25)
-     ════════════════════════════════════════════ -->
-
-<!-- Slide 23: Section title -->
-<div class="slide section-title" data-notes="Claude Code kan også kjøres remote — på Anthropics infrastruktur. La oss se på hva det betyr.">
-  <h1>Remote bruk</h1>
-</div>
-
-<!-- Slide 24: --remote -->
-<div class="slide" data-notes="Med --remote kjører Claude på Anthropics servere. Du trenger ikke lokal maskin. Session-id lar deg gjenoppta en sesjon senere. Perfekt for lange oppgaver du vil kjøre i bakgrunnen.">
-  <h2>--remote</h2>
-  <p style="margin-bottom:1rem">Kjør Claude på Anthropics infrastruktur.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
-<span class="comment"># Start remote sesjon</span>
-<br><span class="prompt">$</span> claude <span class="flag">--remote</span> <span class="string">"Refaktorer hele auth-modulen"</span>
-<br>
-<br><span class="comment"># Gjenoppta sesjon</span>
-<br><span class="prompt">$</span> claude <span class="flag">--resume</span> <span class="string">abc123</span>
-<br>
-<br><span class="comment"># Fra CI/CD</span>
-<br><span class="prompt">$</span> claude <span class="flag">--remote</span> \
-<br>    <span class="flag">--max-turns</span> 50 \
-<br>    <span class="string">"Implementer feature X basert på spec.md"</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 25: Limitations -->
-<div class="slide bg-soft" data-notes="Men remote har begrensninger: ingen tilgang til lokalt filsystem, begrenset MCP-støtte, sesjoner har begrenset levetid, og det er avhengig av nettverkstilgang. Vurder trade-offs.">
-  <h2>Begrensninger</h2>
-  <p style="margin-bottom:1.5rem">Ærlig om trade-offs.</p>
-  <ul style="max-width:650px">
-    <li>Ingen tilgang til lokalt filsystem</li>
-    <li>Begrenset MCP-støtte</li>
-    <li>Sesjoner har begrenset levetid</li>
-    <li>Avhengig av nettverkstilgang</li>
-    <li>Kan ikke kjøre lokale verktøy (Docker, etc.)</li>
-  </ul>
-  <p class="muted" style="margin-top:1.5rem">Bruk remote for isolerte, selvstendige oppgaver &mdash; ikke for lokal utvikling.</p>
-</div>
-
-<!-- ════════════════════════════════════════════
-     DEL 5: PROBLEMS (26-29)
+     DEL 4: PROBLEMS (22-25)
      ════════════════════════════════════════════ -->
 
 <!-- Slide 26: Section title -->
@@ -1168,84 +1126,86 @@ Du beskriver →  AI planlegger
 
 <!-- Slide 30: Section title -->
 <div class="slide section-title" data-notes="Men vi har en løsning. Og den er inspirert av en uventet kilde.">
-  <h1>Løsningen</h1>
+  <h1>Selvstendige agenter<br><span style="font-size:0.5em;opacity:0.6">— løsningen</span></h1>
 </div>
 
 <!-- Slide 31: Ralph-loopen -->
 <div class="slide" data-notes="Ralph-loopen: inspiert av Ralph Wiggum. Ideen er enkel — ikke mål AI på første forsøk, mål konvergens over tid. Design for iterasjon, ikke perfeksjon. Korte loops med validering.">
   <h2>Ralph-loopen</h2>
-  <p class="subtitle" style="font-style:italic">"I'm helping!"</p>
-  <p style="margin-bottom:1.5rem;max-width:700px">
-    Design for iterasjon, ikke perfeksjon.<br>
-    Korte loops med ekstern validering.
-  </p>
-  <svg viewBox="0 0 640 220" style="width:100%;max-width:700px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <!-- Forsøk box -->
-    <rect x="20" y="30" width="130" height="60" rx="10" fill="#023c40"/>
-    <text x="85" y="56" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Forsøk</text>
-    <text x="85" y="76" text-anchor="middle" fill="rgba(255,247,238,0.5)" font-family="'JetBrains Mono',monospace" font-size="11">#N</text>
-    <!-- Arrow to Valider -->
-    <path d="M150 60 H200" stroke="#d4cec6" stroke-width="2"/>
-    <polygon points="197,55 208,60 197,65" fill="#d4cec6"/>
-    <!-- Valider box -->
-    <rect x="210" y="30" width="130" height="60" rx="10" fill="#f3de8a"/>
-    <text x="275" y="56" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Valider</text>
-    <text x="275" y="76" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="11" opacity="0.6">(tester)</text>
-    <!-- Arrow to Lær -->
-    <path d="M340 50 H385" stroke="#d4cec6" stroke-width="2"/>
-    <polygon points="382,45 393,50 382,55" fill="#d4cec6"/>
-    <text x="363" y="42" text-anchor="middle" fill="#d4cec6" font-family="'Raleway',sans-serif" font-size="10">Feil?</text>
-    <!-- Lær box -->
-    <rect x="395" y="30" width="110" height="60" rx="10" fill="#afcbff"/>
-    <text x="450" y="56" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Lær</text>
-    <text x="450" y="76" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="11" opacity="0.6">(juster)</text>
-    <!-- Loop back arrow -->
-    <path d="M450 90 V130 C450 155 420 155 85 155 C50 155 50 140 50 120 V90" stroke="#cae7b9" stroke-width="2" fill="none" stroke-dasharray="6 3" opacity="0.6"/>
-    <polygon points="45,93 50,82 55,93" fill="#cae7b9" opacity="0.6"/>
-    <!-- Arrow to Lever -->
-    <path d="M340 70 H385 Q393 70 393 78 V120 H540" stroke="#cae7b9" stroke-width="2" fill="none" opacity="0" />
-    <!-- OK path from Valider -->
-    <path d="M275 90 V140 H520" stroke="#cae7b9" stroke-width="2.5" fill="none"/>
-    <polygon points="517,135 528,140 517,145" fill="#cae7b9"/>
-    <text x="275" y="120" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="10">OK!</text>
-    <!-- Lever box -->
-    <rect x="530" y="118" width="100" height="44" rx="10" fill="#cae7b9"/>
-    <text x="580" y="146" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Lever!</text>
-  </svg>
-  <p style="margin-top:1rem;font-style:italic;opacity:0.8">Ikke mål AI på første forsøk &mdash; mål konvergens over tid.</p>
+  <p class="subtitle" style="font-style:italic;margin-bottom:1rem">"I'm helping!" — Design for iterasjon, ikke perfeksjon.</p>
+  <div class="two-col" style="grid-template-columns:1.3fr 1fr;align-items:start;gap:2rem">
+    <div>
+      <svg viewBox="0 -45 300 200" style="width:100%;max-width:360px;display:block" xmlns="http://www.w3.org/2000/svg">
+        <!-- Forsøk box -->
+        <rect x="10" y="10" width="100" height="50" rx="8" fill="#023c40" stroke="#0a5c63" stroke-width="2"/>
+        <text x="60" y="40" text-anchor="middle" fill="#fff" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Forsøk #N</text>
+        <!-- Arrow to Valider -->
+        <path d="M110 35 H150" stroke="#023c40" stroke-width="3"/>
+        <polygon points="147,28 162,35 147,42" fill="#023c40"/>
+        <!-- Valider box -->
+        <rect x="165" y="10" width="100" height="50" rx="8" fill="#f3de8a" stroke="#d4b82e" stroke-width="2"/>
+        <text x="215" y="40" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Valider</text>
+        <!-- Loop back arrow (Feil) - goes above -->
+        <path d="M215 10 Q215 -15 145 -15 Q60 -15 60 10" stroke="#c0392b" stroke-width="3" fill="none"/>
+        <polygon points="53,7 60,22 67,7" fill="#c0392b"/>
+        <text x="145" y="-25" text-anchor="middle" fill="#c0392b" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">Feil → Retry</text>
+        <!-- OK arrow down -->
+        <path d="M215 60 V95" stroke="#27ae60" stroke-width="3"/>
+        <polygon points="208,92 215,107 222,92" fill="#27ae60"/>
+        <text x="240" y="82" fill="#27ae60" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">OK!</text>
+        <!-- Lever box -->
+        <rect x="165" y="110" width="100" height="40" rx="8" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
+        <text x="215" y="135" text-anchor="middle" fill="#fff" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Lever!</text>
+      </svg>
+    </div>
+    <div>
+      <div class="terminal small">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+        </div>
+        <div class="terminal-body">
+<span class="prompt">$</span> <span class="flag">while</span> ! ./gradlew test; <span class="flag">do</span>
+<br>    cat prompt.md | claude <span class="flag">-p</span>
+<br>  <span class="flag">done</span>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:0.5rem;font-size:0.85rem">Kjør til testene passerer.</p>
+    </div>
+  </div>
 </div>
 
 <!-- Slide 32: ATDD approach -->
-<div class="slide" data-notes="Acceptance Test Driven Development: testene definerer objektivt hva 'ferdig' betyr. Stop-hooks avbryter Claude når noe går galt. Ekstern validering i hver iterasjon.">
-  <h2>ATDD &mdash; tester som sannhet</h2>
-  <p style="margin-bottom:1rem">Tester definerer objektivt hva "ferdig" betyr.</p>
+<div class="slide" data-notes="Acceptance Test Driven Development: tickets i Linear definerer planen. Raskere å iterere og validere tickets enn å validere all kode. Vi bruker /review-ticket skill til dette.">
+  <h2>ATDD &mdash; Acceptance Test Driven Development</h2>
+  <p style="margin-bottom:1rem">Raskere å iterere på tickets i Linear og validere <em>planen</em> enn å validere all kode.</p>
+  <p style="margin-bottom:1rem">Vi bruker <span class="badge badge-mint">/review-ticket</span> skill.</p>
   <div class="terminal small">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
       <div class="terminal-dot yellow"></div>
       <div class="terminal-dot green"></div>
-      <span class="terminal-title">settings.json</span>
+      <span class="terminal-title">Linear</span>
     </div>
-    <div class="terminal-body">
-{
-<br>  <span class="string">"hooks"</span>: {
-<br>    <span class="string">"stop"</span>: [{
-<br>      <span class="string">"command"</span>: <span class="string">"npm test"</span>,
-<br>      <span class="string">"blocking"</span>: <span class="keyword">true</span>
-<br>    }]
-<br>  }
-<br>}
+    <div class="terminal-body" style="font-size:0.85em">
+<span class="comment"># Title: Implement user auth</span>
+<br>
+<br><span class="keyword">Acceptance criteria:</span>
+<br>- [ ] Login endpoint returns JWT token
+<br>- [ ] Token expires after 24h
+<br>- [ ] Refresh token flow works
+<br>- [ ] Failed login returns 401
+<br>
+<br><span class="keyword">Tech notes:</span>
+<br>Use bcrypt for password hashing
     </div>
   </div>
-  <ul style="margin-top:1rem">
-    <li>Claude stopper &rarr; hook kjører tester</li>
-    <li>Tester feiler &rarr; resultat mates tilbake</li>
-    <li>Claude itererer til testene er grønne</li>
-  </ul>
+  <p class="muted" style="margin-top:0.8rem">Valider <em>planen</em> i Linear før full implementasjon.</p>
 </div>
 
 <!-- Slide 33: Lisa intro -->
-<div class="slide" data-notes="Lisa er vårt verktøy for å implementere Ralph-loopen. Navnet: Looping Implementor Saving Assumptions. En kommando: lisa ENG-123, og den gjør resten.">
+<div class="slide" data-notes="Lisa ble bygget for Evenly. Hva om backloggen implementerte seg selv? Tar Ralph-loopen til neste nivå: en langlevende agent som aldri mister kontekst.">
   <h2>Lisa</h2>
   <p class="subtitle">Looping Implementor Saving Assumptions</p>
   <div class="terminal" style="margin-top:1.5rem">
@@ -1260,70 +1220,77 @@ Du beskriver →  AI planlegger
     </div>
   </div>
   <p style="margin-top:1.5rem;max-width:600px">
-    En kommando. Henter oppgaven, implementerer, validerer, logger beslutninger, leverer.
+    Autonom ticket-implementering. Mister aldri kontekst, vedlikeholder state på tvers av sesjoner.
   </p>
 </div>
 
 <!-- Slide 34: Lisa architecture -->
-<div class="slide" data-notes="Lisa har tre faser: PRE-WORK henter kontekst og skriver tester. WORK LOOP implementerer i korte iterasjoner med validering. POST-WORK committer, logger og oppdaterer Linear.">
+<div class="slide" data-notes="Lisa har tre faser. PRE-WORK: hent ticket, opprett branch, planlegg 5-20 steg. WORK LOOP: velg steg, implementer, test/review, commit, lagre state. POST-WORK: konklusjon, review guide, oppdater Linear.">
   <h2>Lisa &mdash; arkitektur</h2>
-  <svg viewBox="0 0 740 320" style="width:100%;max-width:800px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 740 340" style="width:100%;max-width:800px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
     <!-- Phase labels -->
     <text x="100" y="20" text-anchor="middle" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">PRE-WORK</text>
     <text x="370" y="20" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">WORK LOOP</text>
     <text x="630" y="20" text-anchor="middle" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">POST-WORK</text>
     <!-- Phase dividers -->
-    <line x1="230" y1="10" x2="230" y2="310" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
-    <line x1="510" y1="10" x2="510" y2="310" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="200" y1="10" x2="200" y2="330" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="520" y1="10" x2="520" y2="330" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
     <!-- PRE-WORK boxes -->
-    <rect x="25" y="40" width="150" height="40" rx="8" fill="#023c40"/>
-    <text x="100" y="65" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Hent Linear-issue</text>
-    <path d="M100 80 V95" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="96,93 100,101 104,93" fill="#cae7b9" opacity="0.5"/>
-    <rect x="25" y="105" width="150" height="40" rx="8" fill="#023c40"/>
-    <text x="100" y="130" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Les kode &amp; kontekst</text>
-    <path d="M100 145 V160" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="96,158 100,166 104,158" fill="#cae7b9" opacity="0.5"/>
-    <rect x="25" y="170" width="150" height="40" rx="8" fill="#023c40"/>
-    <text x="100" y="195" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Skriv acc-tester</text>
+    <rect x="25" y="40" width="150" height="36" rx="8" fill="#023c40"/>
+    <text x="100" y="63" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Hent ticket</text>
+    <path d="M100 76 V90" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="96,88 100,96 104,88" fill="#cae7b9" opacity="0.5"/>
+    <rect x="25" y="100" width="150" height="36" rx="8" fill="#023c40"/>
+    <text x="100" y="123" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Opprett branch</text>
+    <path d="M100 136 V150" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="96,148 100,156 104,148" fill="#cae7b9" opacity="0.5"/>
+    <rect x="25" y="160" width="150" height="36" rx="8" fill="#023c40"/>
+    <text x="100" y="183" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Plan 5-20 steps</text>
     <!-- Arrow to WORK LOOP -->
-    <path d="M175 190 H270" stroke="#cae7b9" stroke-width="2"/>
-    <polygon points="267,185 278,190 267,195" fill="#cae7b9"/>
-    <!-- WORK LOOP boxes -->
-    <rect x="280" y="60" width="160" height="40" rx="8" fill="#023c40"/>
-    <text x="360" y="85" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="12">Implementer</text>
-    <path d="M360 100 V115" stroke="#afcbff" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="356,113 360,121 364,113" fill="#afcbff" opacity="0.5"/>
-    <rect x="280" y="125" width="160" height="40" rx="8" fill="#023c40"/>
-    <text x="360" y="150" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="12">Kjør tester</text>
-    <!-- Fail loop back -->
-    <path d="M440 145 H470 V50 H360 V60" stroke="#f3de8a" stroke-width="1.5" fill="none" stroke-dasharray="5 3" opacity="0.5"/>
-    <polygon points="356,63 360,53 364,63" fill="#f3de8a" opacity="0.5"/>
-    <text x="480" y="95" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="10" opacity="0.7">Nei</text>
-    <!-- Pass arrow down -->
-    <path d="M360 165 V180" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="356,178 360,186 364,178" fill="#cae7b9" opacity="0.5"/>
-    <text x="345" y="178" text-anchor="end" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="10">Ja</text>
-    <rect x="280" y="190" width="160" height="34" rx="8" fill="#cae7b9"/>
-    <text x="360" y="212" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Ferdig!</text>
+    <path d="M175 178 H225" stroke="#cae7b9" stroke-width="2"/>
+    <polygon points="222,173 233,178 222,183" fill="#cae7b9"/>
+    <!-- WORK LOOP - circular arrangement -->
+    <rect x="240" y="45" width="130" height="32" rx="8" fill="#023c40"/>
+    <text x="305" y="66" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">1. Velg step</text>
+    <rect x="380" y="85" width="130" height="32" rx="8" fill="#023c40"/>
+    <text x="445" y="106" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">2. Implementer</text>
+    <rect x="380" y="145" width="130" height="32" rx="8" fill="#023c40"/>
+    <text x="445" y="166" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">3. Test → Review</text>
+    <rect x="380" y="205" width="130" height="32" rx="8" fill="#023c40"/>
+    <text x="445" y="226" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">4. Commit</text>
+    <rect x="240" y="245" width="130" height="32" rx="8" fill="#023c40"/>
+    <text x="305" y="266" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">5. Lagre state</text>
+    <!-- Loop arrows -->
+    <!-- Step 1 → Step 2 (curve down-right) -->
+    <path d="M370 61 Q400 61 400 85" stroke="#afcbff" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <polygon points="396,82 400,92 404,82" fill="#afcbff" opacity="0.6"/>
+    <!-- Step 2 → Step 3 -->
+    <path d="M445 117 V138" stroke="#afcbff" stroke-width="1.5" opacity="0.6"/>
+    <polygon points="441,135 445,145 449,135" fill="#afcbff" opacity="0.6"/>
+    <!-- Step 3 → Step 4 -->
+    <path d="M445 177 V198" stroke="#afcbff" stroke-width="1.5" opacity="0.6"/>
+    <polygon points="441,195 445,205 449,195" fill="#afcbff" opacity="0.6"/>
+    <!-- Step 4 → Step 5 (curve down-left) -->
+    <path d="M380 221 Q350 221 350 245" stroke="#afcbff" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <polygon points="346,242 350,252 354,242" fill="#afcbff" opacity="0.6"/>
+    <!-- Loop back arrow (from state back to step) -->
+    <path d="M240 261 H220 V61 H240" stroke="#afcbff" stroke-width="2" fill="none" stroke-dasharray="5 3" opacity="0.7"/>
+    <polygon points="237,56 248,61 237,66" fill="#afcbff" opacity="0.7"/>
+    <text x="210" y="160" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="9" opacity="0.8" text-anchor="middle" transform="rotate(-90 210,160)">neste step</text>
     <!-- Arrow to POST-WORK -->
-    <path d="M440 207 H540" stroke="#f3de8a" stroke-width="2"/>
-    <polygon points="537,202 548,207 537,212" fill="#f3de8a"/>
+    <path d="M510 155 H540" stroke="#f3de8a" stroke-width="2"/>
+    <polygon points="537,150 548,155 537,160" fill="#f3de8a"/>
     <!-- POST-WORK boxes -->
-    <rect x="550" y="55" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="628" y="78" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Commit + push</text>
-    <path d="M628 91 V105" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="624,103 628,111 632,103" fill="#f3de8a" opacity="0.5"/>
-    <rect x="550" y="115" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="628" y="138" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Opprett PR</text>
-    <path d="M628 151 V165" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="624,163 628,171 632,163" fill="#f3de8a" opacity="0.5"/>
-    <rect x="550" y="175" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="628" y="198" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Oppdater Linear</text>
-    <path d="M628 211 V225" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="624,223 628,231 632,223" fill="#f3de8a" opacity="0.5"/>
-    <rect x="550" y="235" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="628" y="258" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Logg assumptions</text>
+    <rect x="555" y="55" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="632" y="78" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Konklusjon</text>
+    <path d="M632 91 V110" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="628,108 632,116 636,108" fill="#f3de8a" opacity="0.5"/>
+    <rect x="555" y="120" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="632" y="143" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Review guide</text>
+    <path d="M632 156 V175" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="628,173 632,181 636,173" fill="#f3de8a" opacity="0.5"/>
+    <rect x="555" y="185" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="632" y="208" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Oppdater Linear</text>
   </svg>
 </div>
 
@@ -1364,44 +1331,76 @@ Du beskriver →  AI planlegger
           <span class="terminal-title">git log</span>
         </div>
         <div class="terminal-body" style="font-size:clamp(0.6rem,0.85vw,0.75rem)">
-<span class="string">feat: add rate limiting</span>
+<span class="string">feat(lisa): [ENG-123] step 3:</span>
+<span class="string">  add webhook</span>
 <br>
-<br>Implements ENG-123
-<br>
-<br><span class="comment">Assumption-P.1:</span> Using existing
-<br>  auth module
-<br><span class="comment">Assumption-1.1:</span> express-rate-limit
-<br>  for middleware
-<br><span class="comment">Assumption-2.1:</span> Switched to
-<br>  sliding window after test failure
+<br><span class="comment">Lisa-Iteration:</span> 5
+<br><span class="comment">Lisa-Step:</span> 3
+<br><span class="comment">Lisa-Assumptions:</span> P.1, 5.1, 5.2
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Slide 36: Lisa naming anecdote -->
+<!-- Slide 36: Review Guide -->
+<div class="slide" data-notes="Etter implementering genererer Lisa en review guide. Hjelper reviewer å forstå endringene: formål, entry point, flow, og kritiske punkter å fokusere på.">
+  <h2>Review Guide</h2>
+  <p style="margin-bottom:1rem">Lisa genererer en guide for revieweren.</p>
+  <div class="terminal" style="max-width:600px;margin:0 auto">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">Terminal</span>
+    </div>
+    <div class="terminal-body" style="font-size:clamp(0.55rem,0.8vw,0.7rem);text-align:left">
+<span class="hl">📋 Review Guide: ENG-123 - Add webhook</span>
+<br>
+<br><span class="string">Purpose</span>
+<br>  Enables real-time notifications...
+<br>
+<br><span class="string">Entry Point</span>
+<br>  POST /api/webhooks → WebhookController
+<br>
+<br><span class="string">Flow</span>
+<br>  1. Request validated...
+<br>  2. WebhookService.create()...
+<br>
+<br><span class="string">Key Review Points</span>
+<br>  1. <span class="flag">⚠</span> WebhookDispatcher.send()
+<br>     Async HTTP call with 5s timeout
+    </div>
+  </div>
+</div>
+
+<!-- Slide 37: Lisa naming anecdote -->
 <div class="slide bg-soft" data-notes="Hvordan fikk Lisa navnet sitt? Vi startet med Ralph-loopen — men vi ville vite hvilke antagelser som ble gjort. Lisa er den smarte søsteren som skriver ned alt. Looping Implementor Saving Assumptions.">
   <h2>Hvorfor "Lisa"?</h2>
-  <p style="max-width:650px;margin-bottom:1.5rem">
-    Vi hadde Ralph-loopen &mdash; iterasjon med validering.
-  </p>
-  <p style="max-width:650px;margin-bottom:1.5rem">
-    Men vi ville også vite <em>hvilke antagelser</em> som ble gjort.
-  </p>
-  <p style="max-width:650px;margin-bottom:1rem">
-    Lisa er den smarte søsteren som skriver ned alt.
-  </p>
-  <p style="font-style:italic;opacity:0.7;margin-top:1rem">
-    <strong>L</strong>ooping <strong>I</strong>mplementor <strong>S</strong>aving <strong>A</strong>ssumptions
-  </p>
+  <div style="display:flex;gap:4rem;align-items:center;justify-content:center;flex-wrap:wrap">
+    <div style="max-width:600px">
+      <p style="margin-bottom:1.5rem">
+        Vi hadde Ralph-loopen &mdash; iterasjon med validering.
+      </p>
+      <p style="margin-bottom:1.5rem">
+        Men vi ville også vite <em>hvilke antagelser</em> som ble gjort.
+      </p>
+      <p style="margin-bottom:1rem">
+        Lisa er den smarte søsteren som skriver ned alt.
+      </p>
+      <p style="font-style:italic;opacity:0.7;margin-top:1rem">
+        <strong>L</strong>ooping <strong>I</strong>mplementor <strong>S</strong>aving <strong>A</strong>ssumptions
+      </p>
+    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/ac/I_Love_Lisa_promo.jpg" alt="I Love Lisa" style="max-height:280px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15)">
+  </div>
 </div>
 
 <!-- ════════════════════════════════════════════
-     CLOSING (37-38)
+     CLOSING (38-39)
      ════════════════════════════════════════════ -->
 
-<!-- Slide 37: Summary diagram -->
+<!-- Slide 38: Summary diagram -->
 <div class="slide" data-notes="Oppsummering: tre lag. Kontekst (CLAUDE.md, agents, skills, MCP) gir Claude kunnskap. CLI (claude -p med flagg) gir kontroll. Og harness (din logikk) gir pålitelighet.">
   <h2>Alt henger sammen</h2>
   <svg viewBox="0 0 600 340" style="width:100%;max-width:660px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
@@ -1429,27 +1428,25 @@ Du beskriver →  AI planlegger
   </svg>
 </div>
 
-<!-- Slide 38: Takk -->
+<!-- Slide 39: Takk -->
 <div class="slide bg-teal" data-notes="Takk for oppmerksomheten! Spørsmål? Lisa er open source på GitHub. Ta kontakt om du vil vite mer.">
   <h1 style="font-size:clamp(3rem,6vw,5rem)">Takk!</h1>
-  <div style="margin-top:2rem;text-align:left;max-width:500px">
-    <p style="margin-bottom:0.8rem"><span style="color:var(--mint)">Ole Ravna</span></p>
-    <p style="margin-bottom:0.4rem" class="muted">Webstep &amp; Evenly</p>
-    <p style="margin-top:1.5rem;margin-bottom:0.4rem">
-      <span class="badge badge-mint">github.com/evenly-energy/lisa</span>
+  <div style="text-align:left;margin-top:2rem">
+    <p style="margin-bottom:1rem;font-size:1.4rem"><span style="color:var(--mint)">Ole Ravna</span></p>
+    <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Webstep &amp; Evenly</p>
+    <p style="margin-top:2rem">
+      <span class="badge badge-mint" style="font-size:1.1rem;padding:0.5rem 1rem">github.com/evenly-energy/lisa</span>
     </p>
   </div>
-  <div style="margin-top:3rem;text-align:left;max-width:500px;font-size:0.9rem;opacity:0.7">
-    <p>Claude Code = agent i terminalen</p>
-    <p>Structured output = byggeblokk</p>
-    <p>Ralph-loop + Lisa = pålitelig automatisering</p>
+  <div style="position:absolute;bottom:2rem;left:2rem;background:white;padding:0.5rem;border-radius:8px">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa" alt="QR code to Lisa repo" style="display:block">
   </div>
 </div>
 
 </div><!-- /presentation -->
 
 <!-- Slide counter -->
-<div class="slide-counter" id="slideCounter">1 / 38</div>
+<div class="slide-counter" id="slideCounter">1 / 39</div>
 
 
 <!-- Speaker notes -->
