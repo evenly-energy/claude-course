@@ -6,7 +6,7 @@
 <title>Claude Code — Fra chatbot til byggeblokk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,7 +18,7 @@
   --yellow: #f3de8a;
   --cream: #fff7ee;
   --soft: #f9fbfa;
-  --muted: #d4cec6;
+  --muted: #8a847c;
   --burgundy: #3e2a35;
   --terminal-bg: #0a1a1c;
   --slide-transition: 0.4s ease;
@@ -26,8 +26,8 @@
 
 html, body {
   width: 100%; height: 100%;
-  font-family: 'Instrument Sans', sans-serif;
-  background: var(--cream);
+  font-family: 'Raleway', sans-serif;
+  background: transparent;
   color: var(--teal);
   overflow: hidden;
 }
@@ -43,6 +43,7 @@ html, body {
 .presentation {
   width: 100%; height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 /* ── Slide base ── */
@@ -56,7 +57,7 @@ html, body {
   transition: opacity var(--slide-transition), transform var(--slide-transition);
   pointer-events: none;
   text-align: center;
-  background: var(--cream);
+  background: transparent;
 }
 .slide.active {
   opacity: 1; transform: translateX(0);
@@ -67,7 +68,7 @@ html, body {
 }
 
 /* ── Slide variants ── */
-.slide.bg-soft { background: var(--soft); }
+.slide.bg-soft { background: transparent; }
 .slide.bg-teal {
   background: var(--teal);
   color: var(--cream);
@@ -105,21 +106,23 @@ html, body {
 /* ── Typography ── */
 h1 {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(2.8rem, 6vw, 5rem);
   font-weight: 400;
   margin-bottom: 0.5em;
   color: var(--teal);
   line-height: 1.15;
+  letter-spacing: 0.02em;
 }
 h2 {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-size: clamp(2rem, 4vw, 3.2rem);
   font-weight: 400;
   margin-bottom: 0.6em;
   color: var(--teal);
+  letter-spacing: 0.015em;
 }
 h3 {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: clamp(1rem, 1.8vw, 1.4rem);
   font-weight: 600;
   margin-bottom: 0.5em;
@@ -283,19 +286,6 @@ ul li::before {
   z-index: 50;
   user-select: none;
 }
-.start-btn {
-  position: fixed; bottom: 1.2rem; left: 1.5rem;
-  padding: 0.5em 1.2em;
-  background: var(--teal);
-  color: var(--cream);
-  border: none; border-radius: 6px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 0.85rem;
-  cursor: pointer;
-  z-index: 50;
-  transition: background 0.2s;
-}
-.start-btn:hover { background: var(--teal-hover); }
 
 /* ── Speaker notes overlay ── */
 .speaker-notes {
@@ -369,10 +359,66 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   .two-col { grid-template-columns: 1fr; }
   .terminal { max-width: 100%; }
 }
+
+/* ── Background blobs (aurora effect) ── */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--cream);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(280px);
+  opacity: 0.2;
+  animation: float 20s ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 60vw;
+  height: 60vw;
+  background: var(--mint);
+  top: -15%;
+  right: -15%;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 55vw;
+  height: 55vw;
+  background: var(--blue);
+  bottom: -10%;
+  left: -10%;
+  animation-delay: -7s;
+}
+
+.blob-3 {
+  width: 45vw;
+  height: 45vw;
+  background: var(--yellow);
+  top: 30%;
+  left: 40%;
+  animation-delay: -14s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
 </style>
 </head>
 <body>
 
+<div class="bg-blobs" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
 <div class="progress-bar" id="progressBar"></div>
 
 <div class="presentation" id="presentation">
@@ -385,7 +431,7 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 <div class="slide active" data-notes="Introduser deg: Ole Ravna, konsulent i Webstep, grunder av Evenly. Tema i dag: Claude Code — ikke bare en chatbot, men en byggeblokk for automatisering.">
   <h1 style="font-size:clamp(3rem,7vw,5.5rem)">Claude Code</h1>
   <p class="subtitle">Fra chatbot til byggeblokk</p>
-  <p class="muted" style="margin-top:2rem">Ole Ravna &middot; Webstep &amp; Evenly</p>
+  <p class="muted" style="margin-top:2rem">Ole Ravna</p>
 </div>
 
 <!-- Slide 2: Hva er Claude Code? -->
@@ -400,21 +446,24 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
       <span class="terminal-title">~/prosjekt</span>
     </div>
     <div class="terminal-body">
-<span class="prompt">$</span> claude
-<br><br>
-<span class="output">╭──────────────────────────────────────╮</span>
-<br><span class="output">│  Claude Code        v1.0.42         │</span>
-<br><span class="output">│  Model: claude-sonnet-4-5-20250929  │</span>
-<br><span class="output">╰──────────────────────────────────────╯</span>
-<br><br>
-<span class="dim">&gt;</span> Fiks feilen i auth-modulen og kjør testene
+<span class="prompt">❯</span> claude
+<br>
+<span class="output">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Claude Code v2.1.39</span>
+<br><span class="output">&nbsp;▐▛███▜▌&nbsp;&nbsp;&nbsp;Sonnet 4.5 · Claude Max</span>
+<br><span class="output">▝▜█████▛▘&nbsp;&nbsp;~/stuff/claude-course-2</span>
+<br><span class="output">&nbsp;&nbsp;▘▘ ▝▝&nbsp;&nbsp;&nbsp;&nbsp;Opus 4.6 is here · $50 free extra usage · /extra-usage to enable</span>
+<br>
+<span class="dim">───────────────────────────────────────────────────────────</span>
+<br><span class="prompt">❯</span> Try "refactor &lt;filepath&gt;"
+<br><span class="dim">───────────────────────────────────────────────────────────</span>
+<br><span class="dim">&nbsp;&nbsp;? for shortcuts</span>
     </div>
   </div>
 </div>
 
-<!-- Slide 3: Copilot vs Claude Code -->
-<div class="slide" data-notes="Viktig distinksjon: Copilot er autocomplete — reagerer på det du skriver. Claude Code er en agent — tar beslutninger, navigerer filer, kjører kommandoer. Fundamentalt forskjellig arbeidsflyt.">
-  <h2>Copilot vs Claude Code</h2>
+<!-- Slide 3: Autofullføring vs Agent -->
+<div class="slide" data-notes="Viktig distinksjon: Autocomplete er reaktivt — reagerer på det du skriver. En agent er proaktiv — tar beslutninger, navigerer filer, kjører kommandoer. Fundamentalt forskjellig arbeidsflyt.">
+  <h2>Autofullføring vs Agent</h2>
   <div class="two-col" style="margin-top:1.5rem">
     <div>
       <h3 style="color:var(--muted)">Autocomplete</h3>
@@ -452,7 +501,7 @@ Du beskriver →  AI planlegger
       <span class="terminal-title">claude</span>
     </div>
     <div class="terminal-body">
-<span class="dim">&gt;</span> Fiks feilen i auth-modulen og kjør testene
+<span class="dim">&gt;</span> Fiks feilen i auth-modulen, kjør testene og commit
 <br><br>
 <span class="comment"># Claude leser filer...</span>
 <br><span class="output">Read src/auth/login.ts</span>
@@ -473,40 +522,72 @@ Du beskriver →  AI planlegger
 </div>
 
 <!-- ════════════════════════════════════════════
-     DEL 2: KONFIGURERING (5-12)
+     DEL 2: AGENTISK KODING (5-12)
      ════════════════════════════════════════════ -->
 
 <!-- Slide 5: Section title -->
-<div class="slide section-title" data-notes="Nå skal vi se på hvordan du konfigurerer Claude Code for å fungere best mulig i ditt prosjekt.">
-  <h1>Konfigurering</h1>
+<div class="slide section-title" data-notes="Nå skal vi se på hvordan du bruker Claude Code for agentisk koding i ditt prosjekt.">
+  <h1>Agentisk koding</h1>
 </div>
 
 <!-- Slide 6: CLAUDE.md -->
 <div class="slide" data-notes="CLAUDE.md er den viktigste konfigurasjonsfilen. Den ligger i roten av prosjektet og gir Claude kontekst om kodebasen. Tenk på det som en README for AI-en.">
   <h2>CLAUDE.md</h2>
   <p style="margin-bottom:1rem">Prosjektets kontekst for Claude — en README for AI-en.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">CLAUDE.md</span>
+  <div class="two-col" style="margin-top:1.5rem;gap:1.5rem">
+    <div>
+      <div class="terminal small">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">CLAUDE.md</span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Project Context</span>
+<br>
+<br><span class="keyword">What is Evenly?</span>
+<br>Evenly is a Flexibility Service
+<br>Provider (FSP) platform that
+<br>aggregates household energy assets
+<br>(EV chargers, batteries, heat pumps)
+<br>and trades their flexibility on
+<br>power markets.
+<br>
+<br><span class="keyword">Key Integrations:</span>
+<br>- NODES - Flexibility marketplace
+<br>&nbsp;&nbsp;(ShortFlex, LongFlex, Max Usage)
+<br>- Easee - EV charger OEM via
+<br>&nbsp;&nbsp;Axle Energy API standard
+        </div>
+      </div>
     </div>
-    <div class="terminal-body">
-<span class="comment"># Prosjekt: Energi-plattform</span>
+    <div>
+      <div class="terminal small">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">CLAUDE.md</span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Code Style</span>
 <br>
-<br>Stack: Next.js 15, TypeScript, Prisma, PostgreSQL
+<br>Never use fully qualified class
+<br>names - always use imports
 <br>
-<br><span class="comment">## Regler</span>
-<br>- Alltid skriv tester for nye funksjoner
-<br>- Bruk norske kommentarer i forretningslogikk
-<br>- Kjør <span class="string">`npm run lint`</span> før commit
-<br>- Ikke endre migrasjonsfiler
+<br><span class="error">❌ BAD:</span>
+<br><span class="keyword">val</span> event = <span class="muted">no.evenly</span>
+<br><span class="muted">&nbsp;&nbsp;.domain.events.</span>
+<br><span class="muted">&nbsp;&nbsp;</span>PortfolioCreatedEvent()
 <br>
-<br><span class="comment">## Struktur</span>
-<br>- <span class="flag">src/app/</span> — Next.js app router
-<br>- <span class="flag">src/lib/</span> — Forretningslogikk
-<br>- <span class="flag">prisma/</span>  — Database-schema
+<br><span class="success">✅ GOOD:</span>
+<br><span class="keyword">import</span> no.evenly.domain
+<br>&nbsp;&nbsp;.events.PortfolioCreatedEvent
+<br><span class="keyword">val</span> event =
+<br>&nbsp;&nbsp;PortfolioCreatedEvent()
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -550,23 +631,24 @@ Du beskriver →  AI planlegger
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
-          <span class="terminal-title">.claude/skills/energy-domain.md</span>
+          <span class="terminal-title">.claude/skills/review-ticket/SKILL.md</span>
         </div>
         <div class="terminal-body">
-<span class="comment"># Energi-domene</span>
+<span class="comment"># /review-ticket</span>
 <br>
-<br>- Spotpris = nordpool day-ahead
-<br>- HAN-port = strømmåler-data
-<br>- Nettleie har fastledd + energiledd
-<br>- Alle priser i øre/kWh
+<br>Hent ticket fra Linear via MCP.
+<br>Analyser om beskrivelsen matcher koden.
+<br>Foreslå implementasjonssteg.
+<br>
+<br>Bruk: <span class="string">/review-ticket ENG-123</span>
         </div>
       </div>
     </div>
     <div>
       <ul>
-        <li>Definert i <span class="badge badge-mint">.claude/skills/</span></li>
-        <li>Lastes automatisk ved behov</li>
-        <li>Deles på tvers av agenter</li>
+        <li>Validerer tickets mot codebase</li>
+        <li>Henter fra Linear via MCP</li>
+        <li>Foreslår implementasjonssteg</li>
         <li>Versjoneres med koden</li>
       </ul>
     </div>
@@ -622,10 +704,27 @@ Du beskriver →  AI planlegger
     </div>
   </div>
   <p class="muted" style="margin-top:0.8rem">Les issues, opprett PRs, send meldinger &mdash; direkte fra Claude Code</p>
+  <div class="terminal small" style="margin-top:1rem">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">Claude Code</span>
+    </div>
+    <div class="terminal-body">
+<span class="prompt">&gt;</span> se på ENG-456
+<br>
+<br><span class="muted">Henter ticket fra Linear...</span>
+<br>
+<br><span class="string">ENG-456:</span> Legg til støtte for flere valutaer
+<br>Status: In Progress | Assignee: @erik
+<br>Estimat: 3 poeng
+    </div>
+  </div>
 </div>
 
 <!-- Slide 11: API & Models -->
-<div class="slide" data-notes="Du kan velge modell per oppgave: opus for vanskelige arkitekturoppgaver, sonnet for daglig bruk, haiku for raske småting. Du kan også styre effort-nivå og sette API-nøkler for ulike providers.">
+<div class="slide" data-notes="Du kan velge modell per oppgave: Opus 4.6 for vanskelige arkitekturoppgaver, Sonnet 4.5 for daglig bruk, Haiku 4.5 for raske småting. Du kan også styre effort-nivå og sette API-nøkler for ulike providers.">
   <h2>API &amp; Modeller</h2>
   <div class="terminal small" style="margin-top:1rem">
     <div class="terminal-bar">
@@ -643,11 +742,6 @@ Du beskriver →  AI planlegger
 <br><span class="comment"># Sett innsatsnivå</span>
 <br><span class="prompt">$</span> claude <span class="flag">--effort</span> low    <span class="comment"># rask, billig</span>
 <br><span class="prompt">$</span> claude <span class="flag">--effort</span> high   <span class="comment"># grundig, dyrere</span>
-<br>
-<br><span class="comment"># Providers</span>
-<br><span class="prompt">$</span> <span class="keyword">export</span> ANTHROPIC_API_KEY=<span class="string">"sk-..."</span>
-<br><span class="prompt">$</span> <span class="keyword">export</span> CLAUDE_CODE_USE_BEDROCK=<span class="string">1</span>
-<br><span class="prompt">$</span> <span class="keyword">export</span> CLAUDE_CODE_USE_VERTEX=<span class="string">1</span>
     </div>
   </div>
 </div>
@@ -656,57 +750,91 @@ Du beskriver →  AI planlegger
 <div class="slide" data-notes="Claude Code kan spawne subagenter — barneprosesser med egne kontekstvinduer. Hovedagenten delegerer oppgaver, og subagentene jobber parallelt. Perfekt for store kodeendringer på tvers av mange filer.">
   <h2>Subagenter</h2>
   <p style="margin-bottom:1rem">Hovedagenten delegerer til barneprosesser med egne kontekstvinduer.</p>
-  <div class="diagram">
-                    ┌─────────────┐
-                    │ <span class="hl">Hovedagent</span>  │
-                    │  (Opus)     │
-                    └──────┬──────┘
-               ┌───────────┼───────────┐
-               ▼           ▼           ▼
-        ┌────────────┐ ┌────────┐ ┌──────────┐
-        │ <span class="hl-blue">Utforsk</span>    │ │ <span class="hl-blue">Endre</span>  │ │ <span class="hl-blue">Test</span>     │
-        │ kodebasen  │ │ kode   │ │ endringer│
-        │ (Haiku)    │ │(Sonnet)│ │ (Haiku)  │
-        └────────────┘ └────────┘ └──────────┘
-  </div>
+  <svg viewBox="0 0 600 250" style="width:100%;max-width:650px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <rect x="210" y="12" width="180" height="64" rx="10" fill="#023c40"/>
+    <text x="300" y="40" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="16" font-weight="600">Hovedagent</text>
+    <text x="300" y="60" text-anchor="middle" fill="rgba(255,247,238,0.6)" font-family="'JetBrains Mono',monospace" font-size="12">(Opus 4.6)</text>
+    <path d="M300 76 V110 M100 110 H500 M100 110 V148 M300 110 V148 M500 110 V148" stroke="#cae7b9" stroke-width="2" fill="none" opacity="0.5"/>
+    <polygon points="95,145 100,155 105,145" fill="#cae7b9" opacity="0.5"/>
+    <polygon points="295,145 300,155 305,145" fill="#cae7b9" opacity="0.5"/>
+    <polygon points="495,145 500,155 505,145" fill="#cae7b9" opacity="0.5"/>
+    <rect x="20" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#cae7b9" stroke-width="1.5"/>
+    <text x="100" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Utforsk</text>
+    <text x="100" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">kodebasen</text>
+    <text x="100" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Haiku 4.5)</text>
+    <rect x="220" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#afcbff" stroke-width="1.5"/>
+    <text x="300" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Endre</text>
+    <text x="300" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">kode</text>
+    <text x="300" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Sonnet 4.5)</text>
+    <rect x="420" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#f3de8a" stroke-width="1.5"/>
+    <text x="500" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Test</text>
+    <text x="500" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">endringer</text>
+    <text x="500" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Haiku)</text>
+  </svg>
 </div>
 
 <!-- ════════════════════════════════════════════
-     DEL 3: --print mode (13-22)
+     DEL 3: headless mode (13-22)
      ════════════════════════════════════════════ -->
 
 <!-- Slide 13: Section title -->
-<div class="slide section-title" data-notes="Nå kommer vi til det som virkelig er game-changer: --print mode. Dette er det som gjør Claude Code til en byggeblokk, ikke bare et interaktivt verktøy.">
-  <h1>Automatisering<br>med --print</h1>
+<div class="slide section-title" data-notes="Nå kommer vi til det som virkelig er game-changer: headless mode. Dette er det som gjør Claude Code til en byggeblokk, ikke bare et interaktivt verktøy.">
+  <h1>Automatisering<br>med headless mode</h1>
 </div>
 
 <!-- Slide 14: --print basics -->
 <div class="slide" data-notes="--print eller -p gjør Claude Code headless: ingen interaktivitet, perfekt for scripting. Pipe inn en prompt, få ut resultatet. Så enkelt.">
   <h2>--print mode</h2>
   <p style="margin-bottom:1rem">Headless, ingen interaksjon &mdash; perfekt for scripting.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
+  <div class="two-col" style="gap:2rem;max-width:95%">
+    <div>
+      <div class="terminal" style="max-width:none">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">Terminal</span>
+        </div>
+        <div class="terminal-body">
 <span class="comment"># Enkel bruk</span>
-<br><span class="prompt">$</span> echo <span class="string">"Forklar hva denne koden gjør"</span> | claude <span class="flag">-p</span>
+<br><span class="prompt">$</span> echo <span class="string">"Forklar koden"</span> | claude <span class="flag">-p</span>
 <br>
 <br><span class="comment"># Med fil-kontekst</span>
-<br><span class="prompt">$</span> cat src/auth.ts | claude <span class="flag">-p</span> <span class="string">"Finn sikkerhetsproblemer"</span>
+<br><span class="prompt">$</span> cat src/auth.ts | claude <span class="flag">-p</span> <span class="string">"Sikkerhetsproblemer?"</span>
 <br>
-<br><span class="comment"># I et script</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="string">"Generer unit-tester for src/utils.ts"</span> > tests/utils.test.ts
+<br><span class="comment"># Output til fil</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="string">"Lag tester"</span> > test.ts
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="terminal" style="max-width:none">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">review_pr.py</span>
+        </div>
+        <div class="terminal-body">
+<span class="keyword">import</span> subprocess, json
+<br>
+<br>result = subprocess.run(
+<br>    [<span class="string">"claude"</span>, <span class="string">"-p"</span>, <span class="string">"breaking changes?"</span>, <span class="string">"--output-format"</span>, <span class="string">"json"</span>],
+<br>    capture_output=<span class="keyword">True</span>)
+<br>
+<br>data = json.loads(result.stdout)
+<br><span class="keyword">if</span> data[<span class="string">"breaking"</span>]:
+<br>    notify_team(data[<span class="string">"reason"</span>])
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Slide 15: Permissions -->
 <div class="slide" data-notes="I --print mode har du to valg for permissions: enten skip alt med --dangerously-skip-permissions, eller vær presis med --allowed-tools. Anbefaler sterkt allowed-tools for CI/CD.">
-  <h2>Permissions</h2>
+  <h2>Rettigheter</h2>
+  <p style="margin-bottom:1rem">Kontroller hva agenten får gjøre.</p>
   <div class="terminal" style="margin-top:1rem">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
@@ -715,7 +843,7 @@ Du beskriver →  AI planlegger
       <span class="terminal-title">Terminal</span>
     </div>
     <div class="terminal-body">
-<span class="comment"># YOLO-mode (dev/testing only)</span>
+<span class="comment"># Use only in sandboxed environments</span>
 <br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span> <span class="string">"Fix all lint errors"</span>
 <br>
 <br><span class="comment"># Presis kontroll (CI/CD)</span>
@@ -753,12 +881,12 @@ Du beskriver →  AI planlegger
   </div>
 </div>
 
-<!-- Slide 17: Structured output intro -->
-<div class="slide" data-notes="Her er nøkkelen: forskjellen mellom fritekst og strukturert output. Fritekst er fint for mennesker, men ubrukelig for maskiner. JSON er det som gjør Claude til en byggeblokk.">
-  <h2>Fritekst vs Strukturert</h2>
-  <div class="two-col" style="margin-top:1.5rem">
+<!-- Slide 17: Structured output example with output -->
+<div class="slide" data-notes="Strukturert output gjør Claude til en byggeblokk. Du definerer et JSON-schema, og Claude returnerer alltid data i det formatet. Perfekt for pipelines og automatisering.">
+  <h2>Strukturert output</h2>
+  <div class="two-col" style="margin-top:1rem;grid-template-columns:1.5fr 1fr">
     <div>
-      <h3 style="color:var(--muted)">Fritekst</h3>
+      <h3 style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem">Kommando</h3>
       <div class="terminal small">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
@@ -766,19 +894,22 @@ Du beskriver →  AI planlegger
           <div class="terminal-dot green"></div>
         </div>
         <div class="terminal-body">
-Jeg fant 3 problemer i koden:
-<br>
-<br>1. SQL injection i login()
-<br>2. Manglende rate limiting
-<br>3. Hardkodet API-nøkkel
-<br>
-<br>Anbefaler å fikse #1 først.
+<span class="prompt">$</span> ./gradlew test 2>&1 | claude <span class="flag">-p</span> \
+<br>    <span class="flag">--model</span> haiku \
+<br>    <span class="flag">--output-format</span> json \
+<br>    <span class="flag">--json-schema</span> <span class="string">'{
+<br>      "type": "object",
+<br>      "properties": {
+<br>        "passed":  { "type": "number",  "description": "Passing tests" },
+<br>        "failed":  { "type": "number",  "description": "Failing tests" },
+<br>        "success": { "type": "boolean", "description": "All tests passed" }
+<br>      }
+<br>    }'</span>
         </div>
       </div>
-      <p class="muted" style="margin-top:0.5rem;text-align:center">Fint for mennesker</p>
     </div>
     <div>
-      <h3 style="color:var(--mint)">JSON</h3>
+      <h3 style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Output</h3>
       <div class="terminal small">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
@@ -787,83 +918,51 @@ Jeg fant 3 problemer i koden:
         </div>
         <div class="terminal-body">
 {
-<br>  <span class="string">"issues"</span>: [
-<br>    {
-<br>      <span class="string">"severity"</span>: <span class="string">"critical"</span>,
-<br>      <span class="string">"type"</span>: <span class="string">"sql_injection"</span>,
-<br>      <span class="string">"file"</span>: <span class="string">"auth.ts"</span>,
-<br>      <span class="string">"line"</span>: 42
-<br>    }
-<br>  ]
+<br>  <span class="string">"passed"</span>: 47,
+<br>  <span class="string">"failed"</span>: 3,
+<br>  <span class="string">"success"</span>: <span class="flag">false</span>
 <br>}
         </div>
       </div>
-      <p class="muted" style="margin-top:0.5rem;text-align:center">Maskinlesbart</p>
+      <p class="muted" style="margin-top:0.5rem;text-align:center;font-size:0.8rem">Alltid gyldig JSON i ditt schema</p>
     </div>
   </div>
 </div>
 
-<!-- Slide 18: Structured output example -->
-<div class="slide" data-notes="Her er den konkrete syntaksen: du definerer et JSON-schema og ber om JSON output. Claude vil alltid returnere data i det formatet du spesifiserer. Utrolig kraftig for pipelines.">
-  <h2>Strukturert output</h2>
-  <div class="terminal" style="margin-top:1rem">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
-<span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--output-format</span> json \
-<br>    <span class="flag">--json-schema</span> <span class="string">'{
-<br>      "type": "object",
-<br>      "properties": {
-<br>        "issues": {
-<br>          "type": "array",
-<br>          "items": {
-<br>            "type": "object",
-<br>            "properties": {
-<br>              "severity": { "type": "string" },
-<br>              "file": { "type": "string" },
-<br>              "line": { "type": "number" },
-<br>              "description": { "type": "string" }
-<br>            }
-<br>          }
-<br>        }
-<br>      }
-<br>    }'</span> \
-<br>    <span class="string">"Analyser sikkerheten i src/"</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 19: Key message -->
-<div class="slide key-message" data-notes="Denne setningen er essensen av hele foredraget. Structured output er det som transformerer Claude fra en ting du snakker med til en ting du bygger med.">
-  <blockquote>
-    Strukturert output er forskjellen mellom AI som chatbot og AI som byggeblokk.
-  </blockquote>
-</div>
-
-<!-- Slide 20: Stream JSON -->
-<div class="slide" data-notes="For mer avanserte scenarier kan du bruke stream-json for å mate Claude med strukturert input. Perfekt for multi-turn pipelines der du bygger opp kontekst over flere kall.">
+<!-- Slide 18: Stream JSON -->
+<div class="slide" data-notes="Stream-json gir strukturert input og output. Perfekt for pipelines der du trenger å parse resultatet maskinelt.">
   <h2>Stream JSON</h2>
-  <p style="margin-bottom:1rem">Strukturert input for multi-turn pipelines.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
+  <div class="two-col" style="margin-top:0.5rem;grid-template-columns:1fr 1fr">
+    <div>
+      <h3 style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem">--input-format stream-json</h3>
+      <div class="terminal small">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+        </div>
+        <div class="terminal-body">
+{"<span class="flag">type</span>":"user","<span class="flag">content</span>":"Hei"}
+<br>{"<span class="flag">type</span>":"assistant","<span class="flag">content</span>":"Hei!"}
+<br>{"<span class="flag">type</span>":"user","<span class="flag">content</span>":"2+2?"}
+        </div>
+      </div>
+      <p class="muted" style="margin-top:0.5rem;font-size:0.8rem">Én JSON-linje per melding</p>
     </div>
-    <div class="terminal-body">
-<span class="comment"># Send strukturerte meldinger</span>
-<br><span class="prompt">$</span> cat &lt;&lt;<span class="string">EOF</span> | claude <span class="flag">-p</span> <span class="flag">--input-format</span> stream-json
-<br>{"<span class="flag">role</span>":"user","<span class="flag">content</span>":"Analyser denne filen"}
-<br>{"<span class="flag">role</span>":"user","<span class="flag">content</span>":"$(cat src/auth.ts)"}
-<br><span class="string">EOF</span>
-<br>
-<br><span class="comment"># Perfekt for å bygge kontekst programmatisk</span>
+    <div>
+      <h3 style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">--output-format stream-json</h3>
+      <div class="terminal small">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+        </div>
+        <div class="terminal-body">
+{"<span class="flag">type</span>":"assistant","<span class="flag">content</span>":"4",...}
+<br>{"<span class="flag">type</span>":"result","<span class="flag">cost_usd</span>":0.01,...}
+        </div>
+      </div>
+      <p class="muted" style="margin-top:0.5rem;font-size:0.8rem">Maskinlesbar output med metadata</p>
     </div>
   </div>
 </div>
@@ -885,18 +984,16 @@ Jeg fant 3 problemer i koden:
     <div class="flow-arrow">&rarr;</div>
     <div class="flow-box blue">Lever / Retry</div>
   </div>
-  <div class="diagram" style="margin-top:1.5rem;font-size:clamp(0.65rem,0.9vw,0.8rem)">
-┌──────────────────────────────────────────────────┐
-│  <span class="hl">Ditt harness</span> (bash/python/ts)                   │
-│                                                  │
-│  1. Hent oppgave fra Linear/GitHub               │
-│  2. Bygg prompt med kontekst                     │
-│  3. <span class="hl-blue">claude -p --output-format json</span> ...            │
-│  4. Valider output (tester, lint, schema)         │
-│  5. Feilet? → Juster prompt, prøv igjen          │
-│  6. OK? → Commit, push, opprett PR               │
-└──────────────────────────────────────────────────┘
-  </div>
+  <svg viewBox="0 0 560 230" style="width:100%;max-width:620px;margin:1.5rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="4" width="552" height="222" rx="12" fill="#f9fbfa" stroke="#cae7b9" stroke-width="2"/>
+    <text x="280" y="34" text-anchor="middle" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">Ditt harness (bash/python/ts)</text>
+    <text x="40" y="68" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">1.</tspan> Hent oppgave fra Linear/GitHub</text>
+    <text x="40" y="94" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">2.</tspan> Bygg prompt med kontekst</text>
+    <text x="40" y="120" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">3.</tspan> <tspan fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="12">claude -p --output-format json</tspan> ...</text>
+    <text x="40" y="146" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">4.</tspan> Valider output (tester, lint, schema)</text>
+    <text x="40" y="172" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">5.</tspan> Feilet? → Juster prompt, prøv igjen</text>
+    <text x="40" y="198" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">6.</tspan> OK? → Commit, push, opprett PR</text>
+  </svg>
 </div>
 
 <!-- Slide 22: Harness example -->
@@ -959,13 +1056,13 @@ Jeg fant 3 problemer i koden:
     </div>
     <div class="terminal-body">
 <span class="comment"># Start remote sesjon</span>
-<br><span class="prompt">$</span> claude <span class="flag">--remote</span> <span class="flag">-p</span> <span class="string">"Refaktorer hele auth-modulen"</span>
+<br><span class="prompt">$</span> claude <span class="flag">--remote</span> <span class="string">"Refaktorer hele auth-modulen"</span>
 <br>
 <br><span class="comment"># Gjenoppta sesjon</span>
-<br><span class="prompt">$</span> claude <span class="flag">--remote</span> <span class="flag">--session-id</span> <span class="string">abc123</span> <span class="flag">-p</span> <span class="string">"Fortsett"</span>
+<br><span class="prompt">$</span> claude <span class="flag">--resume</span> <span class="string">abc123</span>
 <br>
 <br><span class="comment"># Fra CI/CD</span>
-<br><span class="prompt">$</span> claude <span class="flag">--remote</span> <span class="flag">-p</span> \
+<br><span class="prompt">$</span> claude <span class="flag">--remote</span> \
 <br>    <span class="flag">--max-turns</span> 50 \
 <br>    <span class="string">"Implementer feature X basert på spec.md"</span>
     </div>
@@ -999,46 +1096,45 @@ Jeg fant 3 problemer i koden:
 <div class="slide" data-notes="Context rot: etter hvert som kontekstvinduet fylles opp, degraderer ytelsen. Agenten glemmer instruksjoner, gjentar feil, og kvaliteten faller. Dette er fundamentalt for transformer-arkitekturen.">
   <h2>Context rot</h2>
   <p style="margin-bottom:1rem">Ytelsen degraderer når konteksten fylles opp.</p>
-  <div class="diagram">
-Kvalitet
-  │
-  │ <span class="hl">████████</span>
-  │ <span class="hl">██████████</span>
-  │ <span class="hl">████████████</span>
-  │ ████████████<span class="hl-yellow">████</span>
-  │ ██████████████<span class="hl-yellow">████</span>
-  │ ████████████████<span class="hl-yellow">████</span>
-  │ ██████████████████<span class="hl-yellow">████</span>
-  │ ████████████████████<span class="hl-yellow">████</span>          ← her begynner
-  │ ██████████████████████<span class="hl-yellow">████</span>          problemene
-  │ ████████████████████████<span class="hl-yellow">████</span>
-  └──────────────────────────────── Kontekstbruk
-  </div>
+  <svg viewBox="0 0 600 270" style="width:100%;max-width:650px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#cae7b9"/>
+        <stop offset="55%" stop-color="#cae7b9"/>
+        <stop offset="100%" stop-color="#f3de8a"/>
+      </linearGradient>
+    </defs>
+    <line x1="60" y1="20" x2="60" y2="220" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <line x1="60" y1="220" x2="570" y2="220" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <text x="30" y="125" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" transform="rotate(-90 30 125)">Kvalitet</text>
+    <text x="315" y="250" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12">Kontekstbruk</text>
+    <path d="M60 45 C150 45 250 48 320 65 C380 85 440 130 490 170 C520 195 550 210 570 218 L570 220 L60 220 Z" fill="url(#areaGrad)" opacity="0.25"/>
+    <path d="M60 45 C150 45 250 48 320 65" stroke="#cae7b9" stroke-width="3" fill="none"/>
+    <path d="M320 65 C380 85 440 130 490 170 C520 195 550 210 570 218" stroke="#f3de8a" stroke-width="3" fill="none"/>
+    <line x1="320" y1="30" x2="320" y2="220" stroke="#f3de8a" stroke-width="1" stroke-dasharray="5 4" opacity="0.5"/>
+    <text x="445" y="52" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12" font-weight="500">← her begynner problemene</text>
+  </svg>
 </div>
 
 <!-- Slide 28: Black box + sporbarhet -->
 <div class="slide" data-notes="Når agenten jobber i bakgrunnen, har du ingen innsikt i beslutningene den tar. Hvorfor valgte den den løsningen? Hvilke alternativer vurderte den? Null sporbarhet gjør det umulig å lære av feil.">
   <h2>Black box &amp; sporbarhet</h2>
   <p style="margin-bottom:1.5rem">Agenten jobber i bakgrunnen &mdash; null innsikt i beslutninger.</p>
-  <div class="diagram">
-┌─────────────────────────────────────────────┐
-│                                             │
-│    Du: <span class="hl">"Implementer feature X"</span>               │
-│                                             │
-│           │                                 │
-│           ▼                                 │
-│    ┌──────────────┐                         │
-│    │  <span class="hl-yellow">?????????</span>   │  ← Hva skjer her?       │
-│    │  <span class="hl-yellow">?????????</span>   │  ← Hvilke valg ble tatt? │
-│    │  <span class="hl-yellow">?????????</span>   │  ← Hvorfor denne løsningen│
-│    └──────────────┘                         │
-│           │                                 │
-│           ▼                                 │
-│    Resultat: <span class="hl">"Ferdig!"</span>                     │
-│    (men er det riktig?)                     │
-│                                             │
-└─────────────────────────────────────────────┘
-  </div>
+  <svg viewBox="0 0 460 310" style="width:100%;max-width:500px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <rect x="130" y="8" width="200" height="48" rx="10" fill="#cae7b9"/>
+    <text x="230" y="38" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="500">"Implementer feature X"</text>
+    <path d="M230 56 V92" stroke="#d4cec6" stroke-width="2"/>
+    <polygon points="225,89 230,100 235,89" fill="#d4cec6"/>
+    <rect x="105" y="104" width="250" height="110" rx="12" fill="#023c40"/>
+    <text x="230" y="142" text-anchor="middle" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="22">? ? ? ? ?</text>
+    <text x="230" y="168" text-anchor="middle" fill="rgba(255,247,238,0.4)" font-family="'Raleway',sans-serif" font-size="11">Hvilke valg ble tatt?</text>
+    <text x="230" y="186" text-anchor="middle" fill="rgba(255,247,238,0.4)" font-family="'Raleway',sans-serif" font-size="11">Hvorfor denne løsningen?</text>
+    <path d="M230 214 V250" stroke="#d4cec6" stroke-width="2"/>
+    <polygon points="225,247 230,258 235,247" fill="#d4cec6"/>
+    <rect x="130" y="262" width="200" height="42" rx="10" fill="#cae7b9"/>
+    <text x="230" y="286" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="500">"Ferdig!"</text>
+    <text x="230" y="300" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="10" opacity="0.5">(men er det riktig?)</text>
+  </svg>
 </div>
 
 <!-- Slide 29: No resume + quality decay -->
@@ -1083,19 +1179,39 @@ Kvalitet
     Design for iterasjon, ikke perfeksjon.<br>
     Korte loops med ekstern validering.
   </p>
-  <div class="diagram">
-    ┌──────────┐     ┌──────────┐     ┌──────────┐
-    │  <span class="hl">Forsøk</span>  │────▶│ <span class="hl-yellow">Valider</span>  │────▶│  <span class="hl-blue">Lær</span>     │
-    │   #1     │     │ (tester) │     │ (juster) │
-    └──────────┘     └─────┬────┘     └─────┬────┘
-                           │                │
-                     Feil? │          ┌─────┘
-                           ▼          ▼
-                     ┌──────────┐
-                     │  <span class="hl">Forsøk</span>  │ → Valider → OK? → Lever!
-                     │   #2     │
-                     └──────────┘
-  </div>
+  <svg viewBox="0 0 640 220" style="width:100%;max-width:700px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <!-- Forsøk box -->
+    <rect x="20" y="30" width="130" height="60" rx="10" fill="#023c40"/>
+    <text x="85" y="56" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Forsøk</text>
+    <text x="85" y="76" text-anchor="middle" fill="rgba(255,247,238,0.5)" font-family="'JetBrains Mono',monospace" font-size="11">#N</text>
+    <!-- Arrow to Valider -->
+    <path d="M150 60 H200" stroke="#d4cec6" stroke-width="2"/>
+    <polygon points="197,55 208,60 197,65" fill="#d4cec6"/>
+    <!-- Valider box -->
+    <rect x="210" y="30" width="130" height="60" rx="10" fill="#f3de8a"/>
+    <text x="275" y="56" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Valider</text>
+    <text x="275" y="76" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="11" opacity="0.6">(tester)</text>
+    <!-- Arrow to Lær -->
+    <path d="M340 50 H385" stroke="#d4cec6" stroke-width="2"/>
+    <polygon points="382,45 393,50 382,55" fill="#d4cec6"/>
+    <text x="363" y="42" text-anchor="middle" fill="#d4cec6" font-family="'Raleway',sans-serif" font-size="10">Feil?</text>
+    <!-- Lær box -->
+    <rect x="395" y="30" width="110" height="60" rx="10" fill="#afcbff"/>
+    <text x="450" y="56" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Lær</text>
+    <text x="450" y="76" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="11" opacity="0.6">(juster)</text>
+    <!-- Loop back arrow -->
+    <path d="M450 90 V130 C450 155 420 155 85 155 C50 155 50 140 50 120 V90" stroke="#cae7b9" stroke-width="2" fill="none" stroke-dasharray="6 3" opacity="0.6"/>
+    <polygon points="45,93 50,82 55,93" fill="#cae7b9" opacity="0.6"/>
+    <!-- Arrow to Lever -->
+    <path d="M340 70 H385 Q393 70 393 78 V120 H540" stroke="#cae7b9" stroke-width="2" fill="none" opacity="0" />
+    <!-- OK path from Valider -->
+    <path d="M275 90 V140 H520" stroke="#cae7b9" stroke-width="2.5" fill="none"/>
+    <polygon points="517,135 528,140 517,145" fill="#cae7b9"/>
+    <text x="275" y="120" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="10">OK!</text>
+    <!-- Lever box -->
+    <rect x="530" y="118" width="100" height="44" rx="10" fill="#cae7b9"/>
+    <text x="580" y="146" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Lever!</text>
+  </svg>
   <p style="margin-top:1rem;font-style:italic;opacity:0.8">Ikke mål AI på første forsøk &mdash; mål konvergens over tid.</p>
 </div>
 
@@ -1151,27 +1267,64 @@ Kvalitet
 <!-- Slide 34: Lisa architecture -->
 <div class="slide" data-notes="Lisa har tre faser: PRE-WORK henter kontekst og skriver tester. WORK LOOP implementerer i korte iterasjoner med validering. POST-WORK committer, logger og oppdaterer Linear.">
   <h2>Lisa &mdash; arkitektur</h2>
-  <div class="diagram" style="font-size:clamp(0.6rem,0.85vw,0.78rem)">
-<span class="hl">PRE-WORK</span>                   <span class="hl-blue">WORK LOOP</span>                  <span class="hl-yellow">POST-WORK</span>
-─────────                   ─────────                  ──────────
-
- Hent Linear-issue    ┌──▶ Implementer           Commit + push
-       │              │         │                      │
-       ▼              │         ▼                      ▼
- Les eksisterende     │    Kjør tester            Opprett PR
- kode &amp; kontekst      │         │                      │
-       │              │    Pass? ──▶ Nei ──┐           ▼
-       ▼              │         │          │    Oppdater Linear
- Skriv acceptance-    │        Ja          │           │
- tester               │         │          │           ▼
-       │              │         ▼          │    Logg assumptions
-       ▼              │    Flere krav? ────┘
- Start loop ──────────┘         │
-                               Nei
-                                │
-                                ▼
-                           Ferdig! ────────────▶
-  </div>
+  <svg viewBox="0 0 740 320" style="width:100%;max-width:800px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <!-- Phase labels -->
+    <text x="100" y="20" text-anchor="middle" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">PRE-WORK</text>
+    <text x="370" y="20" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">WORK LOOP</text>
+    <text x="630" y="20" text-anchor="middle" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">POST-WORK</text>
+    <!-- Phase dividers -->
+    <line x1="230" y1="10" x2="230" y2="310" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="510" y1="10" x2="510" y2="310" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
+    <!-- PRE-WORK boxes -->
+    <rect x="25" y="40" width="150" height="40" rx="8" fill="#023c40"/>
+    <text x="100" y="65" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Hent Linear-issue</text>
+    <path d="M100 80 V95" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="96,93 100,101 104,93" fill="#cae7b9" opacity="0.5"/>
+    <rect x="25" y="105" width="150" height="40" rx="8" fill="#023c40"/>
+    <text x="100" y="130" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Les kode &amp; kontekst</text>
+    <path d="M100 145 V160" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="96,158 100,166 104,158" fill="#cae7b9" opacity="0.5"/>
+    <rect x="25" y="170" width="150" height="40" rx="8" fill="#023c40"/>
+    <text x="100" y="195" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Skriv acc-tester</text>
+    <!-- Arrow to WORK LOOP -->
+    <path d="M175 190 H270" stroke="#cae7b9" stroke-width="2"/>
+    <polygon points="267,185 278,190 267,195" fill="#cae7b9"/>
+    <!-- WORK LOOP boxes -->
+    <rect x="280" y="60" width="160" height="40" rx="8" fill="#023c40"/>
+    <text x="360" y="85" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="12">Implementer</text>
+    <path d="M360 100 V115" stroke="#afcbff" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="356,113 360,121 364,113" fill="#afcbff" opacity="0.5"/>
+    <rect x="280" y="125" width="160" height="40" rx="8" fill="#023c40"/>
+    <text x="360" y="150" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="12">Kjør tester</text>
+    <!-- Fail loop back -->
+    <path d="M440 145 H470 V50 H360 V60" stroke="#f3de8a" stroke-width="1.5" fill="none" stroke-dasharray="5 3" opacity="0.5"/>
+    <polygon points="356,63 360,53 364,63" fill="#f3de8a" opacity="0.5"/>
+    <text x="480" y="95" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="10" opacity="0.7">Nei</text>
+    <!-- Pass arrow down -->
+    <path d="M360 165 V180" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="356,178 360,186 364,178" fill="#cae7b9" opacity="0.5"/>
+    <text x="345" y="178" text-anchor="end" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="10">Ja</text>
+    <rect x="280" y="190" width="160" height="34" rx="8" fill="#cae7b9"/>
+    <text x="360" y="212" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Ferdig!</text>
+    <!-- Arrow to POST-WORK -->
+    <path d="M440 207 H540" stroke="#f3de8a" stroke-width="2"/>
+    <polygon points="537,202 548,207 537,212" fill="#f3de8a"/>
+    <!-- POST-WORK boxes -->
+    <rect x="550" y="55" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="628" y="78" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Commit + push</text>
+    <path d="M628 91 V105" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="624,103 628,111 632,103" fill="#f3de8a" opacity="0.5"/>
+    <rect x="550" y="115" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="628" y="138" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Opprett PR</text>
+    <path d="M628 151 V165" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="624,163 628,171 632,163" fill="#f3de8a" opacity="0.5"/>
+    <rect x="550" y="175" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="628" y="198" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Oppdater Linear</text>
+    <path d="M628 211 V225" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
+    <polygon points="624,223 628,231 632,223" fill="#f3de8a" opacity="0.5"/>
+    <rect x="550" y="235" width="155" height="36" rx="8" fill="#023c40"/>
+    <text x="628" y="258" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Logg assumptions</text>
+  </svg>
 </div>
 
 <!-- Slide 35: Assumptions system -->
@@ -1251,29 +1404,29 @@ Kvalitet
 <!-- Slide 37: Summary diagram -->
 <div class="slide" data-notes="Oppsummering: tre lag. Kontekst (CLAUDE.md, agents, skills, MCP) gir Claude kunnskap. CLI (claude -p med flagg) gir kontroll. Og harness (din logikk) gir pålitelighet.">
   <h2>Alt henger sammen</h2>
-  <div class="diagram" style="margin-top:1rem">
-┌───────────────────────────────────────────────────┐
-│  <span class="hl">KONTEKST</span>                                         │
-│  CLAUDE.md  ·  Agents  ·  Skills  ·  MCP          │
-│  → Gir Claude kunnskap om prosjektet              │
-└───────────────────────┬───────────────────────────┘
-                        │
-                        ▼
-┌───────────────────────────────────────────────────┐
-│  <span class="hl-blue">CLI</span>                                                │
-│  claude -p  ·  --model  ·  --allowed-tools         │
-│  --output-format json  ·  --max-turns              │
-│  → Gir deg kontroll over agenten                  │
-└───────────────────────┬───────────────────────────┘
-                        │
-                        ▼
-┌───────────────────────────────────────────────────┐
-│  <span class="hl-yellow">HARNESS</span>                                             │
-│  Din logikk  ·  Validering  ·  Retry              │
-│  Assumptions  ·  Sporbarhet                        │
-│  → Gir pålitelighet og forutsigbarhet             │
-└───────────────────────────────────────────────────┘
-  </div>
+  <svg viewBox="0 0 600 340" style="width:100%;max-width:660px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <!-- KONTEKST layer -->
+    <rect x="30" y="8" width="540" height="85" rx="12" fill="#023c40"/>
+    <text x="60" y="34" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">KONTEKST</text>
+    <text x="60" y="56" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">CLAUDE.md  ·  Agents  ·  Skills  ·  MCP</text>
+    <text x="60" y="78" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir Claude kunnskap om prosjektet</text>
+    <!-- Arrow -->
+    <path d="M300 93 V118" stroke="#cae7b9" stroke-width="2" opacity="0.5"/>
+    <polygon points="295,116 300,126 305,116" fill="#cae7b9" opacity="0.5"/>
+    <!-- CLI layer -->
+    <rect x="30" y="130" width="540" height="85" rx="12" fill="#023c40"/>
+    <text x="60" y="156" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">CLI</text>
+    <text x="60" y="178" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">claude -p  ·  --model  ·  --allowed-tools  ·  --output-format json</text>
+    <text x="60" y="200" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir deg kontroll over agenten</text>
+    <!-- Arrow -->
+    <path d="M300 215 V240" stroke="#afcbff" stroke-width="2" opacity="0.5"/>
+    <polygon points="295,238 300,248 305,238" fill="#afcbff" opacity="0.5"/>
+    <!-- HARNESS layer -->
+    <rect x="30" y="252" width="540" height="85" rx="12" fill="#023c40"/>
+    <text x="60" y="278" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">HARNESS</text>
+    <text x="60" y="300" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">Din logikk  ·  Validering  ·  Retry  ·  Assumptions</text>
+    <text x="60" y="322" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir pålitelighet og forutsigbarhet</text>
+  </svg>
 </div>
 
 <!-- Slide 38: Takk -->
@@ -1298,8 +1451,6 @@ Kvalitet
 <!-- Slide counter -->
 <div class="slide-counter" id="slideCounter">1 / 38</div>
 
-<!-- Start presentation button -->
-<button class="start-btn" id="startBtn">Start presentasjon (F)</button>
 
 <!-- Speaker notes -->
 <div class="speaker-notes" id="speakerNotes">
@@ -1324,16 +1475,21 @@ Kvalitet
   const speakerNotes = document.getElementById('speakerNotes');
   const speakerNotesContent = document.getElementById('speakerNotesContent');
   const overviewGrid = document.getElementById('overviewGrid');
-  const startBtn = document.getElementById('startBtn');
 
   function goTo(n) {
     if (n < 0 || n >= total || n === current) return;
+    const forward = n > current;
+    if (forward) slides[current].classList.add('prev');
     slides[current].classList.remove('active');
-    slides[current].classList.add(n > current ? 'prev' : '');
-    // Clean up prev class after transition
     const old = current;
     setTimeout(() => slides[old].classList.remove('prev'), 400);
     current = n;
+    if (!forward) {
+      slides[current].style.transition = 'none';
+      slides[current].classList.add('prev');
+      slides[current].offsetHeight;
+      slides[current].style.transition = '';
+    }
     slides[current].classList.remove('prev');
     slides[current].classList.add('active');
     updateUI();
@@ -1351,6 +1507,8 @@ Kvalitet
     // Update overview current
     const thumbs = overviewGrid.querySelectorAll('.overview-thumb');
     thumbs.forEach((t, i) => t.classList.toggle('current', i === current));
+    // Update URL hash
+    history.replaceState(null, '', '#' + (current + 1));
   }
 
   function toggleNotes() {
@@ -1388,18 +1546,32 @@ Kvalitet
   }
 
   function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+    const elem = document.documentElement;
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!isFullscreen) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
     } else {
-      document.exitFullscreen().catch(() => {});
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
     }
   }
 
   // Cursor auto-hide in fullscreen
+  function isFullscreen() {
+    return document.fullscreenElement || document.webkitFullscreenElement;
+  }
+
   function resetCursorTimer() {
     document.body.classList.remove('hide-cursor');
     clearTimeout(cursorTimer);
-    if (document.fullscreenElement) {
+    if (isFullscreen()) {
       cursorTimer = setTimeout(() => {
         document.body.classList.add('hide-cursor');
       }, 3000);
@@ -1407,13 +1579,15 @@ Kvalitet
   }
 
   document.addEventListener('mousemove', resetCursorTimer);
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-      document.body.classList.remove('hide-cursor');
-      clearTimeout(cursorTimer);
-    } else {
-      resetCursorTimer();
-    }
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(evt => {
+    document.addEventListener(evt, () => {
+      if (!isFullscreen()) {
+        document.body.classList.remove('hide-cursor');
+        clearTimeout(cursorTimer);
+      } else {
+        resetCursorTimer();
+      }
+    });
   });
 
   // Keyboard navigation
@@ -1422,7 +1596,8 @@ Kvalitet
       toggleOverview();
       return;
     }
-    if (overviewVisible && e.key !== 'o' && e.key !== 'O') return;
+    const allowedInOverview = ['o', 'O', 'f', 'F'];
+    if (overviewVisible && !allowedInOverview.includes(e.key)) return;
 
     switch (e.key) {
       case 'ArrowRight':
@@ -1471,8 +1646,17 @@ Kvalitet
     }
   });
 
-  // Start button
-  startBtn.addEventListener('click', toggleFullscreen);
+  // Init from URL hash
+  const hash = parseInt(location.hash.slice(1), 10);
+  if (hash >= 1 && hash <= total) {
+    goTo(hash - 1);
+  }
+
+  // Handle browser back/forward
+  window.addEventListener('hashchange', () => {
+    const h = parseInt(location.hash.slice(1), 10);
+    if (h >= 1 && h <= total) goTo(h - 1);
+  });
 
   // Init
   updateUI();
