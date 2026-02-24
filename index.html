@@ -428,6 +428,86 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   33% { transform: translate(30px, -30px) scale(1.05); }
   66% { transform: translate(-20px, 20px) scale(0.95); }
 }
+
+/* ── Film grain overlay ── */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ── Staggered content reveal ── */
+.slide.active > * {
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.slide.active > *:nth-child(1) { animation-delay: 0.05s; }
+.slide.active > *:nth-child(2) { animation-delay: 0.12s; }
+.slide.active > *:nth-child(3) { animation-delay: 0.19s; }
+.slide.active > *:nth-child(4) { animation-delay: 0.26s; }
+.slide.active > *:nth-child(5) { animation-delay: 0.33s; }
+.slide.active > *:nth-child(6) { animation-delay: 0.40s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Terminal glow ── */
+.terminal {
+  position: relative;
+}
+.terminal::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(202,231,185,0.15), rgba(175,203,255,0.08));
+  z-index: -1;
+  filter: blur(16px);
+  opacity: 0.6;
+}
+
+/* ── Section title decoration ── */
+.slide.section-title .act-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(202,231,185,0.45);
+  margin-bottom: 1.5rem;
+}
+.slide.section-title h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: var(--mint);
+  margin: 1rem auto 0;
+  opacity: 0.4;
+}
+
+/* ── Key message assertion number ── */
+.slide.key-message {
+  position: relative;
+}
+.slide.key-message .assertion-num {
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  transform: translateY(-50%);
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(8rem, 20vw, 18rem);
+  font-weight: 400;
+  color: var(--teal);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
 </style>
 </head>
 <body>
@@ -437,6 +517,7 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
 </div>
+<div class="grain" aria-hidden="true"></div>
 <div class="progress-bar" id="progressBar"></div>
 
 <div class="presentation" id="presentation">
@@ -447,7 +528,8 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 
 <!-- Slide 1: Title -->
 <div class="slide active" data-notes="Introduce yourself: Ole Ravna, consultant at Webstep, founder of Evenly. Energy/critical infrastructure background. Today's talk: how planning drives autonomous development — from simple loops to a full harness.">
-  <h1 style="font-size:clamp(3.5rem,9vw,7rem)">From Loop<br>to Harness</h1>
+  <h1 style="font-size:clamp(3.5rem,9vw,7rem);margin-bottom:0.2em">From Loop<br>to Harness</h1>
+  <div style="width:50px;height:2px;background:var(--mint);margin:0 auto 1.5rem;opacity:0.5"></div>
   <p class="subtitle">Planning-Driven Autonomous Development with Lisa CLI</p>
   <p class="muted" style="margin-top:2.5rem">Ole Ravna &mdash; Evenly</p>
   <p class="muted">Claude Code Meetup Oslo</p>
@@ -492,11 +574,13 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 
 <!-- Slide 4: Section title -->
 <div class="slide section-title" data-notes="Act 1: The Ralph Loop. We start with why the simplest approach — just repeating the prompt — actually works, and then why it's not enough.">
+  <div class="act-label">Act I</div>
   <h1>The Ralph Loop</h1>
 </div>
 
 <!-- Slide 5: Assertion 1 -->
 <div class="slide key-message" data-notes="This is our first assertion. Most people obsess over which model generates better code. But the real constraint is what you feed the model. A perfect code generator with a vague prompt produces vague code.">
+  <div class="assertion-num">1</div>
   <blockquote>
     "The value of an AI coding agent is bounded by the quality of its plan, not its code generation."
   </blockquote>
@@ -590,11 +674,13 @@ Each loop carries forward what came before.</div>
 
 <!-- Slide 10: Section title -->
 <div class="slide section-title" data-notes="Act 2: If the plan is what matters, then planning isn't a phase before development — it IS development.">
+  <div class="act-label">Act II</div>
   <h1>Planning is<br>Development</h1>
 </div>
 
 <!-- Slide 11: Assertion 2 -->
 <div class="slide key-message" data-notes="Second assertion. If planning drives the output, then planning IS the work. Every developer needs to think like an architect — not because coding is dead, but because the skill is elevated.">
+  <div class="assertion-num">2</div>
   <blockquote>
     "Planning isn't a phase before development &mdash; it is development. Therefore all developers must become architects."
   </blockquote>
@@ -679,6 +765,7 @@ Developer  →  reviews code
 
 <!-- Slide 15: Section title -->
 <div class="slide section-title" data-notes="Act 3: So how do you actually build this? Let's look at the building blocks that make autonomous development possible.">
+  <div class="act-label">Act III</div>
   <h1>Building Blocks</h1>
 </div>
 
@@ -842,11 +929,13 @@ Right model for the right task.</div>
 
 <!-- Slide 21: Section title -->
 <div class="slide section-title" data-notes="Act 4: Verification. Agents can generate code, but can they verify it's correct? This is the hardest part.">
+  <div class="act-label">Act IV</div>
   <h1>Verification</h1>
 </div>
 
 <!-- Slide 22: Assertion 3 -->
 <div class="slide key-message" data-notes="Third and final assertion. Static analysis, code quality, test coverage — agents are good at these. But business logic verification — does this solve the right problem? — is still fundamentally hard.">
+  <div class="assertion-num">3</div>
   <blockquote>
     "Agents can generate and analyze code, but verifying business correctness is still unsolved."
   </blockquote>
@@ -935,6 +1024,7 @@ Right model for the right task.</div>
 
 <!-- Slide 26: Section title -->
 <div class="slide section-title" data-notes="Time to see it in action. Let's check on what we started at the beginning.">
+  <div class="act-label">Payoff</div>
   <h1>Demo</h1>
 </div>
 
