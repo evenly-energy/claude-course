@@ -441,7 +441,7 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 }
 
 /* ── Staggered content reveal ── */
-.slide.active > * {
+.slide.active > *:not(.assertion-num) {
   animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .slide.active > *:nth-child(1) { animation-delay: 0.05s; }
@@ -491,9 +491,6 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 }
 
 /* ── Key message assertion number ── */
-.slide.key-message {
-  position: relative;
-}
 .slide.key-message .assertion-num {
   position: absolute;
   top: 50%;
