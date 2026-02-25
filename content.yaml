@@ -1,0 +1,531 @@
+title: "From Loop to Harness — Planning-Driven Autonomous Development with Lisa CLI"
+
+sections:
+  - name: Opening
+    slides: [1, 2, 3]
+
+  - name: "Act I: The Ralph Loop"
+    slides: [4, 5, 6, 7, 8, 9]
+
+  - name: "Act II: Planning is Development"
+    slides: [10, 11, 12, 13, 14]
+
+  - name: "Act III: Building Blocks"
+    slides: [15, 16, 17, 18, 19, 20]
+
+  - name: "Act IV: Verification"
+    slides: [21, 22, 23, 24, 25]
+
+  - name: Demo Payoff
+    slides: [26, 27, 28, 29]
+
+  - name: Closing
+    slides: [30, 31]
+
+slides:
+  1:
+    type: title
+    heading: "From Loop to Harness"
+    subtitle: "Planning-Driven Autonomous Development with Lisa CLI"
+    author: "Ole Ravna — Evenly"
+    event: "Claude Code Meetup Oslo"
+    notes: >
+      Introduce yourself: Ole Ravna, consultant at Webstep, founder of Evenly.
+      Energy/critical infrastructure background. Today's talk: how planning
+      drives autonomous development — from simple loops to a full harness.
+
+  2:
+    type: default
+    image: disclaimer.png
+    text: >
+      Disclaimer: this entire presentation is an AI experiment.
+      All slides built in raw HTML with pure vibing.
+    notes: >
+      Important caveat: this entire presentation is an experiment in
+      AI-generated content. All slides built in raw HTML with pure vibing.
+
+  3:
+    type: default
+    heading: "Let's start something running"
+    terminal:
+      title: Terminal
+      lines:
+        - "$ lisa ENG-456"
+        - ""
+        - "Fetching ticket from Linear..."
+        - "Creating branch: lisa/ENG-456-add-webhook-support"
+        - "Planning implementation..."
+        - "█░░░░░░░░░"
+    footer: "We'll come back to this."
+    notes: >
+      DEMO: Start Lisa on a prepared ticket in the terminal. Leave it running
+      visibly in the background. We'll come back to it at the end.
+
+  4:
+    type: section-title
+    act: "Act I"
+    heading: "The Ralph Loop"
+    notes: >
+      Act 1: The Ralph Loop. We start with why the simplest approach — just
+      repeating the prompt — actually works, and then why it's not enough.
+
+  5:
+    type: key-message
+    assertion: 1
+    quote: >
+      The value of an AI coding agent is bounded by the quality of its plan,
+      not its code generation.
+    notes: >
+      This is our first assertion. Most people obsess over which model generates
+      better code. But the real constraint is what you feed the model. A perfect
+      code generator with a vague prompt produces vague code.
+
+  6:
+    type: default
+    heading: "The Loop"
+    credit: "Geoffrey Huntley — ghuntley.com/loop"
+    flow:
+      - Read ticket
+      - Plan
+      - Implement
+      - Test
+      - Review
+      - Commit
+    loop: true
+    text: "In its simplest form — just repeat the same prompt."
+    notes: >
+      Credit Geoffrey Huntley and his original post at ghuntley.com/loop. The
+      idea is deceptively simple: read the ticket, plan, implement, test, review,
+      commit, repeat. In its simplest form it's a meme — just repeat the same prompt.
+
+  7:
+    type: default
+    heading: "Repetition actually works"
+    reference: "Leviathan, Kalman & Matias (2025) — arxiv.org/abs/2512.14982"
+    stats:
+      highlight: "47 / 70"
+      detail: "benchmark-model combinations where repetition won"
+      secondary: "0 losses"
+    bullets:
+      - No increase in output length or latency
+      - Repetition happens in the parallelizable prefill stage
+      - RL-trained reasoning models already repeat the user's request internally
+      - The loop mirrors what models naturally want to do
+    notes: >
+      This isn't just a meme. Leviathan, Kalman and Matias (2025) showed that
+      prompt repetition won 47 out of 70 benchmark-model combinations with zero
+      losses. No increase in output length or latency — repetition happens in the
+      parallelizable prefill stage. Reasoning models already learn to repeat the
+      user's request via RL — the Ralph loop mirrors what models naturally want to do.
+
+  8:
+    type: default
+    heading: "Structured repetition"
+    text: "Each iteration isn't blind — it's repetition with accumulated context."
+    diagram: |
+      Iteration 1:  prompt + ticket
+      Iteration 2:  prompt + ticket + test results
+      Iteration 3:  prompt + ticket + test results + review findings
+      Iteration 4:  prompt + ticket + test results + review + fix feedback
+
+      Each loop carries forward what came before.
+    notes: >
+      Each iteration of the Ralph loop isn't blind repetition — it's repetition
+      with accumulated context. The plan carries forward, test results feed back,
+      review findings get incorporated. This is what separates a productive loop
+      from just hitting run again.
+
+  9:
+    type: default
+    heading: "Bounded by input"
+    text: "You can loop forever on a vague ticket and get nowhere."
+    chart:
+      type: line
+      y_axis: Output quality
+      x_axis: Loop iterations
+      lines:
+        - label: Good plan
+          trend: steep-rise
+        - label: Vague ticket
+          trend: flat
+    conclusion: "Planning is the leverage point."
+    notes: >
+      But the loop is bounded by its input. You can loop forever on a vague
+      ticket and get nowhere. The quality of the plan — not the quality of code
+      generation — is the binding constraint. This is where most people stop.
+
+  10:
+    type: section-title
+    act: "Act II"
+    heading: "Planning is Development"
+    notes: >
+      Act 2: If the plan is what matters, then planning isn't a phase before
+      development — it IS development.
+
+  11:
+    type: key-message
+    assertion: 2
+    quote: >
+      Planning isn't a phase before development — it is development. Therefore
+      all developers must become architects.
+    notes: >
+      Second assertion. If planning drives the output, then planning IS the work.
+      Every developer needs to think like an architect — not because coding is
+      dead, but because the skill is elevated.
+
+  12:
+    type: default
+    heading: "The architect shift"
+    columns:
+      left:
+        label: "Before agents"
+        diagram: |
+          Architect  →  plans solution
+          Developer  →  writes code
+          Reviewer   →  checks code
+
+          Only architects plan.
+      right:
+        label: "With agents"
+        diagram: |
+          Developer  →  plans solution
+          Agent      →  writes code
+          Developer  →  reviews code
+
+          Everyone plans.
+    footer: 'The shift: from "coding" to "planning and refining."'
+    notes: >
+      In my world — energy, critical infrastructure — the organization is cautious
+      about agentic AI. But as an architect I already plan solutions to business
+      problems and hand them to developers to implement. The irony is — what I do
+      today is exactly what every developer will do with agents.
+
+  13:
+    type: default
+    heading: "How Lisa plans"
+    text: "Before writing code, Lisa generates 5–20 granular steps."
+    terminal:
+      title: Lisa plan output
+      lines:
+        - "Step 1: Create WebhookController"
+        - "  Files: CREATE src/controllers/webhook.ts"
+        - "  Template: src/controllers/notification.ts"
+        - ""
+        - "Step 2: Add WebhookService with retry logic"
+        - "  Files: CREATE src/services/webhook.ts"
+        - "  Template: src/services/email.ts"
+        - ""
+        - "Step 3: Add database migration"
+        - "  Files: CREATE migrations/20250224_webhooks.sql"
+        - ""
+        - "Assumptions:"
+        - "  P.1 Using existing auth middleware (not new system)"
+        - "  P.2 PostgreSQL for storage (not Redis)"
+    notes: >
+      Before writing any code, Lisa explores the codebase and generates 5-20
+      granular steps. Each step has file operations (create/modify/delete),
+      similar implementations to use as templates. Planning assumptions are
+      tracked explicitly with IDs — every decision is recorded.
+
+  14:
+    type: default
+    heading: "The implication"
+    paragraphs:
+      - "If planning is development, the skill every developer needs is planning."
+      - "That's what architects do."
+      - "This isn't diminishing coding skill — it's elevating the role."
+    subtext: "You need deep technical understanding to plan well for agents."
+    notes: >
+      If planning is development, then the skill every developer needs is
+      planning. That's what architects do — therefore all developers must become
+      architects. This isn't diminishing coding skill — it's elevating the role.
+      You need deep technical understanding to plan well for agents.
+
+  15:
+    type: section-title
+    act: "Act III"
+    heading: "Building Blocks"
+    notes: >
+      Act 3: So how do you actually build this? Let's look at the building
+      blocks that make autonomous development possible.
+
+  16:
+    type: default
+    heading: "Claude Code as a function"
+    text: "Not a chatbot — a building block."
+    columns:
+      left:
+        terminal:
+          title: Headless mode
+          lines:
+            - "# Call Claude, get output"
+            - '$ claude --print "Explain this code"'
+            - ""
+            - "# Pipe context in"
+            - '$ cat src/auth.ts | claude -p "Security issues?"'
+      right:
+        terminal:
+          title: Structured output
+          lines:
+            - "# Predictable JSON responses"
+            - "$ claude -p \\"
+            - "    --output-format json \\"
+            - "    --json-schema '{...}' \\"
+            - '    "Analyze this PR"'
+    notes: >
+      claude --print makes Claude Code headless. Not a chatbot — a building block.
+      Add --json-schema and you get structured output: predictable, parseable
+      responses that your state machine can act on. This is the key differentiator
+      between AI as a chatbot and AI as a component.
+
+  17:
+    type: default
+    heading: "Autonomy with control"
+    terminal:
+      title: Terminal
+      lines:
+        - "# Full access (sandboxed environments only)"
+        - '$ claude -p --dangerously-skip-permissions "Fix all lint errors"'
+        - ""
+        - "# Precise control — whitelist tools"
+        - "$ claude -p \\"
+        - '    --allowed-tools "Read,Write,Bash(npm test)" \\'
+        - '    "Fix the failing tests and verify"'
+    notes: >
+      You need the agent to run without prompting you, but you whitelist exactly
+      which tools it can use. --dangerously-skip-permissions gives full access
+      (sandbox only), --allowed-tools gives precise control. Controlled autonomy.
+
+  18:
+    type: default
+    heading: "Cost & speed optimization"
+    text: "Not every call needs the heavy model."
+    columns:
+      left:
+        terminal:
+          title: Model selection
+          lines:
+            - "# Heavy thinking"
+            - "$ claude --model opus"
+            - ""
+            - "# Daily work"
+            - "$ claude --model sonnet"
+            - ""
+            - "# Quick extraction"
+            - "$ claude --model haiku --effort low"
+      right:
+        diagram: |
+          Lisa mixes models:
+
+          Planning       → Opus
+          Implementation → Sonnet
+          Extraction     → Haiku + low effort
+          Review         → Sonnet
+
+          Right model for the right task.
+    notes: >
+      Not every call needs Opus. Use cheap fast models for extraction, parsing,
+      simple checks. Save the heavy model for planning and implementation. Lisa
+      mixes models based on task complexity. --effort low reduces thinking for
+      simple tasks.
+
+  19:
+    type: default
+    heading: "The state machine"
+    text: "Each state transition is explicit, resumable, traceable."
+    flow:
+      row1: [SELECT_STEP, EXECUTE_WORK, HANDLE_ASSUMPTIONS]
+      row2: [CHECK_COMPLETION, VERIFY_STEP, COMMIT_CHANGES, SAVE_STATE]
+    footer: "If Lisa crashes — re-run and it picks up where it left off."
+    notes: >
+      Lisa chains these calls into a reliable state machine. Each state
+      transition is explicit, resumable, traceable. If Lisa crashes or you stop
+      it, re-run and it picks up where it left off from the Linear comment state.
+
+  20:
+    type: default
+    heading: "Lisa CLI"
+    subtitle: "Looping Implementor Saving Assumptions"
+    links:
+      repo: "github.com/evenly-energy/lisa"
+      qr: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/evenly-energy/lisa"
+    terminal:
+      title: Terminal
+      lines:
+        - "$ npm install -g @evenly-energy/lisa"
+        - "$ lisa ENG-123"
+    notes: >
+      Lisa is open source. Built on top of Claude Code's headless mode. Check
+      it out on GitHub.
+
+  21:
+    type: section-title
+    act: "Act IV"
+    heading: "Verification"
+    notes: >
+      Act 4: Verification. Agents can generate code, but can they verify it's
+      correct? This is the hardest part.
+
+  22:
+    type: key-message
+    assertion: 3
+    quote: >
+      Agents can generate and analyze code, but verifying business correctness
+      is still unsolved.
+    notes: >
+      Third and final assertion. Static analysis, code quality, test coverage —
+      agents are good at these. But business logic verification — does this solve
+      the right problem? — is still fundamentally hard.
+
+  23:
+    type: default
+    heading: "What agents are good at"
+    columns:
+      left:
+        label: Strong
+        bullets:
+          - "Code quality & conventions"
+          - "Test coverage gaps"
+          - "Security patterns (OWASP)"
+          - "Type errors & null safety"
+          - "N+1 queries & performance"
+      right:
+        label: Weak
+        bullets:
+          - "Business logic correctness"
+          - "Domain model alignment"
+          - '"Does the webhook fire at the right time?"'
+          - '"Does the event name match the domain?"'
+          - "Verifying the reviewer's judgment"
+    notes: >
+      Lisa's review phase does this well. Claude checks the implementation
+      against conventions, catches common patterns, flags security issues.
+      Static analysis is a sweet spot for agents.
+
+  24:
+    type: default
+    heading: "Lisa's partial answers"
+    columns:
+      left:
+        terminal:
+          title: Reviewer Guide
+          lines:
+            - "Review Guide: ENG-456"
+            - ""
+            - "Purpose: Real-time webhook notifications"
+            - "Entry: POST /api/webhooks → WebhookController"
+            - "Flow:"
+            - "  1. Request validated by schema"
+            - "  2. WebhookService.create() persists"
+            - "  3. Dispatcher queues async delivery"
+            - ""
+            - "Key Review Points:"
+            - "  ⚠ WebhookDispatcher.send()"
+            - "    Async HTTP call with 5s timeout"
+      right:
+        bullets:
+          - "Reviewer guide — purpose, flow, risk flags"
+          - "Assumption tracking — every decision recorded (P.1, 1.1, 2.1...)"
+          - "Linear comments — team visibility into progress"
+          - "review-ticket skill — validate before implementation"
+    notes: >
+      Lisa doesn't claim to solve verification. But it provides tools to make
+      review faster and more informed: reviewer guides, assumption tracking,
+      Linear comments for team visibility, and the review-ticket skill to
+      validate before implementation.
+
+  25:
+    type: default
+    heading: "Honesty"
+    paragraphs:
+      - "This is active exploration, not a solved problem."
+      - "Lisa is meant to explore solutions — not claim to have found them."
+    notes: >
+      Let's be honest: this is active exploration, not a solved problem. Lisa
+      is meant to explore solutions — not claim to have found them. We're all
+      figuring this out together.
+
+  26:
+    type: section-title
+    act: Payoff
+    heading: "Demo"
+    notes: >
+      Time to see it in action. Let's check on what we started at the beginning.
+
+  27:
+    type: demo
+    variant: bg-teal
+    heading: "review-ticket"
+    text: "Validate the ticket against the codebase before implementation."
+    terminal:
+      title: Claude Code
+      lines:
+        - "> /review-ticket ENG-456"
+    label: LIVE DEMO
+    notes: >
+      DEMO: Run the review-ticket skill on a ticket. Show how it explores the
+      codebase and validates the ticket before any code is written. This is
+      planning as development — we're refining the ticket, not just reading it.
+
+  28:
+    type: demo
+    variant: bg-teal
+    heading: "The running instance"
+    text: "Let's check on what we started at the beginning."
+    bullets:
+      - "Assumptions made (P.1, P.2...)"
+      - "Steps completed vs in-progress"
+      - "Linear comment with live state"
+      - "Git commits with trailers"
+    label: LIVE DEMO
+    notes: >
+      DEMO: Switch to the terminal where Lisa has been running since the opening.
+      Show the assumptions it has made (P.1, P.2...). Show progress on steps —
+      which are done, which is current.
+
+  29:
+    type: demo
+    variant: bg-teal
+    heading: "The finished run"
+    text: "What the loop produces end-to-end."
+    bullets:
+      - "Linear comment — plan checklist, assumptions, iterations"
+      - "Reviewer guide — purpose, entry point, flow, risks"
+      - "Git history — one commit per step with trailers"
+    closing: >
+      A human reviewer gets this guide and can merge with confidence — or catch
+      what the agent missed.
+    label: LIVE DEMO
+    notes: >
+      DEMO: Show a previously completed Lisa run. Walk through the Linear comment:
+      plan checklist, assumptions, iteration count. Show the reviewer guide output.
+      This is what the loop produces — a human reviewer gets this guide and can
+      merge with confidence or catch what the agent missed.
+
+  30:
+    type: default
+    heading: "Three assertions"
+    assertions:
+      1: "The value of an AI coding agent is bounded by the quality of its plan."
+      2: "Planning is development. All developers must become architects."
+      3: "Verifying business correctness is still unsolved."
+    notes: >
+      Quick recap of the three assertions: planning bounds agent value, planning
+      is development, and business verification remains unsolved. These are the
+      key takeaways.
+
+  31:
+    type: closing
+    variant: bg-teal
+    heading: "Thank you!"
+    author: "Ole Ravna"
+    affiliation: "Webstep & Evenly"
+    links:
+      lisa:
+        label: Lisa CLI
+        url: "github.com/evenly-energy/lisa"
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa"
+      feedback:
+        label: Feedback
+        qr_image: feedback-qr.png
+    notes: "Thank you! Lisa is open source on GitHub. Questions welcome."
