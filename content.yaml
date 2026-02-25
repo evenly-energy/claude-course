@@ -498,4 +498,8 @@ slides:
         label: Lisa CLI
         url: "github.com/evenly-energy/lisa"
         qr: "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa"
+      linkedin:
+        label: LinkedIn
+        url: "linkedin.com/in/ravna"
+        qr: "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.linkedin.com/in/ravna/"
     notes: "Thank you! Lisa is open source on GitHub. Questions welcome."
