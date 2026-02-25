@@ -1,416 +1,13 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Code — Fra chatbot til (nokså) selvdrevet utvikler</title>
+<title>Stop Coding, Start Planning — What the Ralph Loop Taught Me</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --teal: #023c40;
-  --teal-hover: #02484d;
-  --mint: #cae7b9;
-  --blue: #afcbff;
-  --yellow: #f3de8a;
-  --cream: #fff7ee;
-  --soft: #f9fbfa;
-  --muted: #8a847c;
-  --burgundy: #3e2a35;
-  --terminal-bg: #0a1a1c;
-  --slide-transition: 0.4s ease;
-}
-
-html, body {
-  width: 100%; height: 100%;
-  font-family: 'Raleway', sans-serif;
-  background: transparent;
-  color: var(--teal);
-  overflow: hidden;
-}
-
-/* ── Progress bar ── */
-.progress-bar {
-  position: fixed; top: 0; left: 0; height: 3px;
-  background: linear-gradient(90deg, var(--mint), var(--blue));
-  z-index: 100; transition: width 0.35s ease;
-}
-
-/* ── Presentation container ── */
-.presentation {
-  width: 100%; height: 100%;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Slide base ── */
-.slide {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  padding: clamp(2rem, 5vw, 6rem);
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity var(--slide-transition), transform var(--slide-transition);
-  pointer-events: none;
-  text-align: center;
-  background: transparent;
-}
-.slide.active {
-  opacity: 1; transform: translateX(0);
-  pointer-events: auto;
-}
-.slide.prev {
-  opacity: 0; transform: translateX(-40px);
-}
-
-/* ── Slide variants ── */
-.slide.bg-soft { background: transparent; }
-.slide.bg-teal {
-  background: var(--teal);
-  color: var(--cream);
-}
-.slide.bg-teal h1, .slide.bg-teal h2, .slide.bg-teal h3 { color: var(--mint); }
-.slide.bg-teal .muted { color: rgba(255,247,238,0.6); }
-
-.slide.section-title {
-  background: var(--teal);
-  color: var(--cream);
-  background-image: radial-gradient(circle at 50% 50%, rgba(202,231,185,0.12) 0%, transparent 70%);
-}
-.slide.section-title h1 {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(3rem, 7vw, 6rem);
-  font-weight: 400;
-  color: var(--mint);
-}
-
-.slide.key-message {
-  background-image: radial-gradient(circle at 50% 50%, rgba(202,231,185,0.08) 0%, transparent 60%);
-}
-.slide.key-message blockquote {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(1.6rem, 3.5vw, 3rem);
-  font-style: italic;
-  color: var(--teal);
-  max-width: 800px;
-  line-height: 1.4;
-  border-left: 4px solid var(--mint);
-  padding-left: 1.5rem;
-  text-align: left;
-}
-
-/* ── Typography ── */
-h1 {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  font-weight: 400;
-  margin-bottom: 0.5em;
-  color: var(--teal);
-  line-height: 1.15;
-  letter-spacing: 0.02em;
-}
-h2 {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 400;
-  margin-bottom: 0.6em;
-  color: var(--teal);
-  letter-spacing: 0.015em;
-}
-h3 {
-  font-family: 'Raleway', sans-serif;
-  font-size: clamp(1rem, 1.8vw, 1.4rem);
-  font-weight: 600;
-  margin-bottom: 0.5em;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--teal);
-}
-p, li {
-  font-size: clamp(1rem, 1.6vw, 1.35rem);
-  line-height: 1.6;
-  max-width: 800px;
-}
-.subtitle {
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
-  color: var(--teal);
-  opacity: 0.7;
-  margin-bottom: 1rem;
-}
-.muted {
-  color: var(--muted);
-  font-size: clamp(0.85rem, 1.2vw, 1rem);
-}
-ul { list-style: none; text-align: left; }
-ul li { padding: 0.3em 0; padding-left: 1.5em; position: relative; }
-ul li::before {
-  content: ''; position: absolute; left: 0; top: 0.7em;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--mint);
-}
-.slide.bg-teal ul li::before { background: var(--mint); }
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  width: 100%;
-  max-width: 1000px;
-  text-align: left;
-}
-.two-col > div { display: flex; flex-direction: column; }
-.two-col h3 { text-align: center; }
-
-.content-left { text-align: left; max-width: 900px; width: 100%; }
-
-.highlight { color: var(--mint); }
-.highlight-yellow { color: var(--yellow); }
-.highlight-blue { color: var(--blue); }
-
-.badge {
-  display: inline-block;
-  padding: 0.15em 0.6em;
-  border-radius: 4px;
-  font-size: 0.85em;
-  font-weight: 600;
-  font-family: 'JetBrains Mono', monospace;
-}
-.badge-mint { background: var(--mint); color: var(--teal); }
-.badge-yellow { background: var(--yellow); color: var(--teal); }
-.badge-blue { background: var(--blue); color: var(--teal); }
-
-/* ── Terminal block ── */
-.terminal {
-  background: var(--terminal-bg);
-  border-radius: 10px;
-  overflow: hidden;
-  width: 100%;
-  max-width: 780px;
-  text-align: left;
-  box-shadow: 0 8px 32px rgba(2,60,64,0.18);
-  margin: 0.8rem auto;
-}
-.terminal-bar {
-  display: flex; align-items: center; gap: 6px;
-  padding: 10px 14px;
-  background: rgba(255,255,255,0.06);
-}
-.terminal-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-}
-.terminal-dot.red { background: #ff5f57; }
-.terminal-dot.yellow { background: #febc2e; }
-.terminal-dot.green { background: #28c840; }
-.terminal-bar .terminal-title {
-  flex: 1; text-align: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
-}
-.terminal-body {
-  padding: 1rem 1.4rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.72rem, 1.1vw, 0.92rem);
-  line-height: 1.65;
-  color: #e0e0e0;
-  overflow-x: auto;
-}
-.terminal-body .prompt { color: var(--mint); }
-.terminal-body .flag { color: var(--blue); }
-.terminal-body .string { color: var(--yellow); }
-.terminal-body .comment { color: #6a8a6d; }
-.terminal-body .keyword { color: #c792ea; }
-.terminal-body .fn { color: #82aaff; }
-.terminal-body .dim { color: rgba(255,255,255,0.35); }
-.terminal-body .output { color: rgba(255,255,255,0.55); }
-
-/* Smaller terminal variant */
-.terminal.small { max-width: 650px; }
-.terminal.small .terminal-body { font-size: clamp(0.65rem, 0.95vw, 0.82rem); padding: 0.8rem 1.1rem; }
-
-/* ── Diagram block ── */
-.diagram {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.7rem, 1vw, 0.9rem);
-  line-height: 1.6;
-  white-space: pre;
-  color: var(--teal);
-  background: var(--soft);
-  border-radius: 10px;
-  padding: 1.5rem 2rem;
-  text-align: left;
-  max-width: 820px;
-  margin: 0.8rem auto;
-  overflow-x: auto;
-}
-.slide.bg-teal .diagram {
-  background: rgba(255,255,255,0.06);
-  color: var(--cream);
-}
-.diagram .hl { color: var(--mint); font-weight: 500; }
-.diagram .hl-blue { color: var(--blue); }
-.diagram .hl-yellow { color: var(--yellow); }
-
-/* ── Flow diagram boxes ── */
-.flow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 1rem 0;
-}
-.flow-box {
-  padding: 0.5em 1em;
-  border-radius: 8px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.7rem, 1vw, 0.85rem);
-  font-weight: 500;
-  white-space: nowrap;
-}
-.flow-box.teal { background: var(--teal); color: var(--cream); }
-.flow-box.mint { background: var(--mint); color: var(--teal); }
-.flow-box.yellow { background: var(--yellow); color: var(--teal); }
-.flow-box.blue { background: var(--blue); color: var(--teal); }
-.flow-arrow { font-size: 1.2rem; color: var(--muted); }
-
-/* ── Controls ── */
-.slide-counter {
-  position: fixed; bottom: 1.2rem; right: 1.5rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--muted);
-  z-index: 50;
-  user-select: none;
-}
-
-/* ── Speaker notes overlay ── */
-.speaker-notes {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  max-height: 30vh;
-  background: rgba(2,60,64,0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: var(--cream);
-  padding: 1.2rem 2rem;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  z-index: 200;
-  transform: translateY(100%);
-  transition: transform 0.3s ease;
-  overflow-y: auto;
-  border-top: 1px solid rgba(202,231,185,0.2);
-}
-.speaker-notes.visible { transform: translateY(0); }
-.speaker-notes-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--mint);
-  margin-bottom: 0.5rem;
-}
-
-/* ── Overview mode ── */
-.overview-grid {
-  position: fixed; inset: 0;
-  background: var(--teal);
-  z-index: 300;
-  display: none;
-  overflow-y: auto;
-  padding: 2rem;
-}
-.overview-grid.visible { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; align-content: start; }
-.overview-thumb {
-  background: var(--cream);
-  border-radius: 8px;
-  padding: 0.8rem;
-  cursor: pointer;
-  aspect-ratio: 16/10;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  font-size: 0.55rem;
-  overflow: hidden;
-  border: 2px solid transparent;
-  transition: border-color 0.2s, transform 0.15s;
-}
-.overview-thumb:hover { border-color: var(--mint); transform: scale(1.03); }
-.overview-thumb.current { border-color: var(--mint); }
-.overview-thumb-number {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--muted);
-  margin-bottom: 0.3rem;
-}
-.overview-thumb-title {
-  font-family: 'Instrument Serif', serif;
-  font-size: 0.9rem;
-  color: var(--teal);
-  text-align: center;
-}
-
-/* ── Cursor hide in fullscreen ── */
-body.hide-cursor, body.hide-cursor * { cursor: none !important; }
-
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .two-col { grid-template-columns: 1fr; }
-  .terminal { max-width: 100%; }
-}
-
-/* ── Background blobs (aurora effect) ── */
-.bg-blobs {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--cream);
-}
-
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(220px);
-  opacity: 0.4;
-  animation: float 20s ease-in-out infinite;
-}
-
-.blob-1 {
-  width: 60vw;
-  height: 60vw;
-  background: var(--mint);
-  top: -15%;
-  right: -15%;
-  animation-delay: 0s;
-}
-
-.blob-2 {
-  width: 55vw;
-  height: 55vw;
-  background: var(--blue);
-  bottom: -10%;
-  left: -10%;
-  animation-delay: -7s;
-}
-
-.blob-3 {
-  width: 45vw;
-  height: 45vw;
-  background: var(--yellow);
-  top: 30%;
-  left: 40%;
-  animation-delay: -14s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -419,795 +16,18 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
 </div>
+<div class="grain" aria-hidden="true"></div>
 <div class="progress-bar" id="progressBar"></div>
 
 <div class="presentation" id="presentation">
 
 <!-- ════════════════════════════════════════════
-     DEL 1: INTRO (1-4)
+     OPENING (1-3)
      ════════════════════════════════════════════ -->
 
-<!-- Slide 1: Title -->
-<div class="slide active" data-notes="Introduser deg: Ole Ravna, konsulent i Webstep, grunder av Evenly. Tema i dag: Claude Code — ikke bare en chatbot, men en (nokså) selvdrevet utvikler for automatisering.">
-  <h1 style="font-size:clamp(3rem,7vw,5.5rem)">Claude Code</h1>
-  <p class="subtitle">Fra chatbot til (nokså) selvdrevet utvikler</p>
-  <p class="muted" style="margin-top:2rem">Ole Ravna</p>
-</div>
-
-<!-- Slide 2: Disclaimer -->
-<div class="slide" data-notes="Viktig forebehold: hele presentasjonen er et eksperiment i AI-generert innhold.">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;height:100%">
-    <img src="disclaimer.png" alt="AI eksperiment" style="max-width:600px;width:90%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.15)">
-    <p style="font-size:clamp(1.1rem,2.5vw,1.6rem);text-align:center;max-width:800px;line-height:1.6">
-      <span class="badge badge-mint">Forbehold:</span> hele denne presentasjonen er et eksperiment i AI.<br>
-      Alle slidene er laget i ren HTML med ren vibing.
-    </p>
-  </div>
-</div>
-
-<!-- Slide 3: Hva er Claude Code? -->
-<div class="slide" data-notes="Claude Code er Anthropics offisielle CLI-verktøy. Det er en agentic coding-agent som kjører i terminalen med full tilgang til filsystemet. Den kan lese, skrive, kjøre kommandoer og ta beslutninger autonomt.">
-  <h2>Hva er Claude Code?</h2>
-  <p style="margin-bottom:1.5rem">En AI-agent i terminalen med full tilgang til filsystemet ditt.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">~/prosjekt</span>
-    </div>
-    <div class="terminal-body">
-<span class="prompt">❯</span> claude
-<br>
-<span class="output">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Claude Code v2.1.39</span>
-<br><span class="output">&nbsp;▐▛███▜▌&nbsp;&nbsp;&nbsp;Sonnet 4.5 · Claude Max</span>
-<br><span class="output">▝▜█████▛▘&nbsp;&nbsp;~/stuff/claude-course-2</span>
-<br><span class="output">&nbsp;&nbsp;▘▘ ▝▝&nbsp;&nbsp;&nbsp;&nbsp;Opus 4.6 is here · $50 free extra usage · /extra-usage to enable</span>
-<br>
-<span class="dim">───────────────────────────────────────────────────────────</span>
-<br><span class="prompt">❯</span> Try "refactor &lt;filepath&gt;"
-<br><span class="dim">───────────────────────────────────────────────────────────</span>
-<br><span class="dim">&nbsp;&nbsp;? for shortcuts</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 3: Autofullføring vs Agent -->
-<div class="slide" data-notes="Viktig distinksjon: Autocomplete er reaktivt — reagerer på det du skriver. En agent er proaktiv — tar beslutninger, navigerer filer, kjører kommandoer. Fundamentalt forskjellig arbeidsflyt.">
-  <h2>Autofullføring vs Agent</h2>
-  <div class="two-col" style="margin-top:1.5rem">
-    <div>
-      <h3 style="color:var(--muted)">Autocomplete</h3>
-      <div class="diagram" style="font-size:clamp(0.65rem,0.9vw,0.82rem)">
-Du skriver  →  AI foreslår
-Du velger   →  AI fortsetter
-Du styrer   →  AI følger
-
-<span class="hl">Reaktiv.</span> Linje for linje.
-      </div>
-    </div>
-    <div>
-      <h3 style="color:var(--mint)">Agent</h3>
-      <div class="diagram" style="font-size:clamp(0.65rem,0.9vw,0.82rem)">
-Du beskriver →  AI planlegger
-             →  AI leser filer
-             →  AI endrer kode
-             →  AI kjører tester
-             →  AI committer
-
-<span class="hl">Proaktiv.</span> Oppgave for oppgave.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 4: The difference -->
-<div class="slide" data-notes="Her er et eksempel: du gir Claude en oppgave, og den leser relevante filer, gjør endringer, kjører testene, og committer. Alt autonomt. Du ser hva den gjør, men du trenger ikke styre hvert steg.">
-  <h2>En agent i praksis</h2>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">claude</span>
-    </div>
-    <div class="terminal-body">
-<span class="dim">&gt;</span> Fiks feilen i auth-modulen, kjør testene og commit
-<br><br>
-<span class="comment"># Claude leser filer...</span>
-<br><span class="output">Read src/auth/login.ts</span>
-<br><span class="output">Read src/auth/session.ts</span>
-<br><span class="output">Read tests/auth.test.ts</span>
-<br><br>
-<span class="comment"># Identifiserer og fikser...</span>
-<br><span class="output">Edit src/auth/session.ts (line 42: fix token expiry check)</span>
-<br><br>
-<span class="comment"># Kjører tester...</span>
-<br><span class="output">Run: npm test -- --grep auth</span>
-<br><span class="string">✓ 12 tests passing</span>
-<br><br>
-<span class="comment"># Committer...</span>
-<br><span class="output">Run: git commit -m "fix: correct token expiry validation"</span>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════
-     DEL 2: AGENTISK KODING (5-12)
-     ════════════════════════════════════════════ -->
-
-<!-- Slide 5: Section title -->
-<div class="slide section-title" data-notes="Nå skal vi se på hvordan du bruker Claude Code for agentisk koding i ditt prosjekt.">
-  <h1>Agentisk koding</h1>
-</div>
-
-<!-- Slide 6: CLAUDE.md -->
-<div class="slide" data-notes="CLAUDE.md er den viktigste konfigurasjonsfilen. Den ligger i roten av prosjektet og gir Claude kontekst om kodebasen. Tenk på det som en README for AI-en.">
-  <h2>CLAUDE.md</h2>
-  <p style="margin-bottom:1rem">Prosjektets kontekst for Claude — en README for AI-en.</p>
-  <div class="two-col" style="margin-top:1.5rem;gap:1.5rem">
-    <div>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">CLAUDE.md</span>
-        </div>
-        <div class="terminal-body">
-<span class="comment"># Project Context</span>
-<br>
-<br><span class="keyword">What is Evenly?</span>
-<br>Evenly is a Flexibility Service
-<br>Provider (FSP) platform that
-<br>aggregates household energy assets
-<br>(EV chargers, batteries, heat pumps)
-<br>and trades their flexibility on
-<br>power markets.
-<br>
-<br><span class="keyword">Key Integrations:</span>
-<br>- NODES - Flexibility marketplace
-<br>&nbsp;&nbsp;(ShortFlex, LongFlex, Max Usage)
-<br>- Easee - EV charger OEM via
-<br>&nbsp;&nbsp;Axle Energy API standard
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="terminal small" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">CLAUDE.md</span>
-        </div>
-        <div class="terminal-body" style="white-space:pre">
-<span class="comment"># Code Style</span>
-
-Never use fully qualified class names - always use imports
-
-<span class="error">❌ BAD:</span>
-<span class="keyword">val</span> event = <span class="muted">no.evenly.domain.events.</span>PortfolioCreatedEvent()
-
-<span class="success">✅ GOOD:</span>
-<span class="keyword">import</span> no.evenly.domain.events.PortfolioCreatedEvent
-<span class="keyword">val</span> event = PortfolioCreatedEvent()
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 7: Custom Agents -->
-<div class="slide" data-notes="Custom agents er slash-commands du definerer selv i .claude/agents/. Hver agent har sin egen systemmelding og verktøy. Perfekt for repetitive oppgaver som code review eller testgenerering.">
-  <h2>Custom Agents</h2>
-  <p style="margin-bottom:1rem">Egendefinerte slash-commands i <span class="badge badge-mint">.claude/agents/</span></p>
-  <div class="terminal small" style="max-width:800px">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">.claude/agents/review.md</span>
-    </div>
-    <div class="terminal-body" style="white-space:pre">
-<span class="comment"># Code Review Agent</span>
-
-Du er en senior code reviewer.
-
-Sjekk alltid:
-1. Typesikkerhet og null-håndtering
-2. Testdekning for nye funksjoner
-3. Ytelse og N+1 queries
-4. Sikkerhetsproblemer (OWASP Top 10)
-
-Gi output som en liste med funn.
-    </div>
-  </div>
-  <p class="muted" style="margin-top:0.8rem">Bruk: <span class="badge badge-mint">/review</span> i Claude Code</p>
-</div>
-
-<!-- Slide 8: Skills -->
-<div class="slide" data-notes="Skills er gjenbrukbare kontekstpakker — litt som agents, men fokusert på kunnskap framfor oppgaver. De lar deg pakke domenekunnskap som Claude kan bruke on-demand.">
-  <h2>Skills</h2>
-  <p style="margin-bottom:1.5rem">Gjenbrukbar kontekst &mdash; pakket domenekunnskap.</p>
-  <div class="two-col">
-    <div>
-      <div class="terminal small" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">.claude/skills/review-ticket/SKILL.md</span>
-        </div>
-        <div class="terminal-body" style="white-space:pre">
-<span class="comment"># /review-ticket</span>
-
-Hent ticket fra Linear via MCP.
-Hent relevant dokumentasjon fra kjente kilder.
-Analyser om beskrivelsen matcher koden.
-Foreslå implementasjonssteg.
-
-Bruk: <span class="string">/review-ticket ENG-123</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <ul>
-        <li>Validerer tickets mot codebase</li>
-        <li>Henter fra Linear via MCP</li>
-        <li>Foreslår implementasjonssteg</li>
-        <li>Versjoneres med koden</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 9: Plugins -->
-<div class="slide" data-notes="Plugins utvider Claude Code med nye verktøy og integrasjoner. De kan legge til nye slash-commands, nye verktøy, eller nye outputformater. Community-drevet økosystem.">
-  <h2>Plugins</h2>
-  <p style="margin-bottom:1.5rem">Extensions som utvider Claude Code med nye verktøy.</p>
-  <div class="terminal small">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">~/.claude/plugins.json</span>
-    </div>
-    <div class="terminal-body">
-{
-<br>  <span class="string">"plugins"</span>: [
-<br>    <span class="string">"@anthropic/plugin-playwright"</span>,
-<br>    <span class="string">"@anthropic/plugin-frontend-design"</span>
-<br>  ]
-<br>}
-    </div>
-  </div>
-  <ul style="margin-top:1rem">
-    <li>Browser-testing med Playwright</li>
-    <li>Generering av frontend-design</li>
-    <li>Community-plugins via npm</li>
-  </ul>
-</div>
-
-<!-- Slide 10: MCP -->
-<div class="slide" data-notes="Model Context Protocol lar Claude Code snakke med eksterne systemer. Konfigurer en MCP-server for Linear, GitHub, Slack — og Claude kan opprette issues, lese PRs, sende meldinger, direkte fra terminalen.">
-  <h2>MCP &mdash; Model Context Protocol</h2>
-  <p style="margin-bottom:1rem">Koble Claude til eksterne systemer.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">.claude/mcp.json</span>
-    </div>
-    <div class="terminal-body">
-{
-<br>  <span class="string">"mcpServers"</span>: {
-<br>    <span class="string">"linear"</span>:  { <span class="string">"url"</span>: <span class="string">"https://mcp.linear.app/sse"</span> },
-<br>    <span class="string">"github"</span>:  { <span class="string">"command"</span>: <span class="string">"gh-mcp-server"</span> },
-<br>    <span class="string">"slack"</span>:   { <span class="string">"command"</span>: <span class="string">"slack-mcp-server"</span> }
-<br>  }
-<br>}
-    </div>
-  </div>
-  <p class="muted" style="margin-top:0.8rem">Les issues, opprett PRs, send meldinger &mdash; direkte fra Claude Code</p>
-  <div class="terminal small" style="margin-top:1rem">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Claude Code</span>
-    </div>
-    <div class="terminal-body">
-<span class="prompt">&gt;</span> se på ENG-456
-<br>
-<br><span class="muted">Henter ticket fra Linear...</span>
-<br>
-<br><span class="string">ENG-456:</span> Legg til støtte for flere valutaer
-<br>Status: In Progress | Assignee: @erik
-<br>Estimat: 3 poeng
-    </div>
-  </div>
-</div>
-
-<!-- Slide 11: API & Models -->
-<div class="slide" data-notes="Du kan velge modell per oppgave: Opus 4.6 for vanskelige arkitekturoppgaver, Sonnet 4.5 for daglig bruk, Haiku 4.5 for raske småting. Du kan også styre effort-nivå og sette API-nøkler for ulike providers.">
-  <h2>API &amp; Modeller</h2>
-  <div class="terminal small" style="margin-top:1rem">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
-<span class="comment"># Velg modell</span>
-<br><span class="prompt">$</span> claude <span class="flag">--model</span> opus
-<br><span class="prompt">$</span> claude <span class="flag">--model</span> sonnet
-<br><span class="prompt">$</span> claude <span class="flag">--model</span> haiku
-<br>
-<br><span class="comment"># Sett innsatsnivå</span>
-<br><span class="prompt">$</span> claude <span class="flag">--effort</span> low    <span class="comment"># rask, billig</span>
-<br><span class="prompt">$</span> claude <span class="flag">--effort</span> high   <span class="comment"># grundig, dyrere</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 12: Subagents -->
-<div class="slide" data-notes="Claude Code kan spawne subagenter — barneprosesser med egne kontekstvinduer. Hovedagenten delegerer oppgaver, og subagentene jobber parallelt. Perfekt for store kodeendringer på tvers av mange filer.">
-  <h2>Subagenter</h2>
-  <p style="margin-bottom:1rem">Hovedagenten delegerer til barneprosesser med egne kontekstvinduer.</p>
-  <svg viewBox="0 0 600 250" style="width:100%;max-width:650px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <rect x="210" y="12" width="180" height="64" rx="10" fill="#023c40"/>
-    <text x="300" y="40" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="16" font-weight="600">Hovedagent</text>
-    <text x="300" y="60" text-anchor="middle" fill="rgba(255,247,238,0.6)" font-family="'JetBrains Mono',monospace" font-size="12">(Opus 4.6)</text>
-    <path d="M300 76 V110 M100 110 H500 M100 110 V148 M300 110 V148 M500 110 V148" stroke="#cae7b9" stroke-width="2" fill="none" opacity="0.5"/>
-    <polygon points="95,145 100,155 105,145" fill="#cae7b9" opacity="0.5"/>
-    <polygon points="295,145 300,155 305,145" fill="#cae7b9" opacity="0.5"/>
-    <polygon points="495,145 500,155 505,145" fill="#cae7b9" opacity="0.5"/>
-    <rect x="20" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#cae7b9" stroke-width="1.5"/>
-    <text x="100" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Utforsk</text>
-    <text x="100" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">kodebasen</text>
-    <text x="100" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Haiku 4.5)</text>
-    <rect x="220" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#afcbff" stroke-width="1.5"/>
-    <text x="300" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Endre</text>
-    <text x="300" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">kode</text>
-    <text x="300" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Sonnet 4.5)</text>
-    <rect x="420" y="158" width="160" height="72" rx="10" fill="#f9fbfa" stroke="#f3de8a" stroke-width="1.5"/>
-    <text x="500" y="186" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="14" font-weight="600">Test</text>
-    <text x="500" y="204" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" opacity="0.6">endringer</text>
-    <text x="500" y="222" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="11">(Haiku)</text>
-  </svg>
-</div>
-
-<!-- ════════════════════════════════════════════
-     DEL 3: headless mode (13-22)
-     ════════════════════════════════════════════ -->
-
-<!-- Slide 13: Section title -->
-<div class="slide section-title" data-notes="Nå kommer vi til det som virkelig er game-changer: headless mode. Dette er det som gjør Claude Code til en (nokså) selvdrevet utvikler, ikke bare et interaktivt verktøy.">
-  <h1>Automatisering<br>med headless mode</h1>
-</div>
-
-<!-- Slide 14: --print basics -->
-<div class="slide" data-notes="--print eller -p gjør Claude Code headless: ingen interaktivitet, perfekt for scripting. Pipe inn en prompt, få ut resultatet. Så enkelt.">
-  <h2>--print mode</h2>
-  <p style="margin-bottom:1rem">Headless, ingen interaksjon &mdash; perfekt for scripting.</p>
-  <div class="two-col" style="gap:2rem;max-width:95%">
-    <div>
-      <div class="terminal" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">Terminal</span>
-        </div>
-        <div class="terminal-body">
-<span class="comment"># Enkel bruk</span>
-<br><span class="prompt">$</span> echo <span class="string">"Forklar koden"</span> | claude <span class="flag">-p</span>
-<br>
-<br><span class="comment"># Med fil-kontekst</span>
-<br><span class="prompt">$</span> cat src/auth.ts | claude <span class="flag">-p</span> <span class="string">"Sikkerhetsproblemer?"</span>
-<br>
-<br><span class="comment"># Output til fil</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="string">"Lag tester"</span> > test.ts
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="terminal" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">review_pr.py</span>
-        </div>
-        <div class="terminal-body">
-<span class="keyword">import</span> subprocess, json
-<br>
-<br>result = subprocess.run(
-<br>    [<span class="string">"claude"</span>, <span class="string">"-p"</span>, <span class="string">"breaking changes?"</span>, <span class="string">"--output-format"</span>, <span class="string">"json"</span>],
-<br>    capture_output=<span class="keyword">True</span>)
-<br>
-<br>data = json.loads(result.stdout)
-<br><span class="keyword">if</span> data[<span class="string">"breaking"</span>]:
-<br>    notify_team(data[<span class="string">"reason"</span>])
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 15: Permissions -->
-<div class="slide" data-notes="I --print mode har du to valg for permissions: enten skip alt med --dangerously-skip-permissions, eller vær presis med --allowed-tools. Anbefaler sterkt allowed-tools for CI/CD.">
-  <h2>Rettigheter</h2>
-  <p style="margin-bottom:1rem">Kontroller hva agenten får gjøre.</p>
-  <div class="terminal" style="margin-top:1rem">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
-<span class="comment"># Use only in sandboxed environments</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span> <span class="string">"Fix all lint errors"</span>
-<br>
-<br><span class="comment"># Presis kontroll (CI/CD)</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--allowed-tools</span> <span class="string">"Read,Grep,Glob"</span> \
-<br>    <span class="string">"Analyser kodebasen og gi en rapport"</span>
-<br>
-<br><span class="comment"># Tillat spesifikke bash-kommandoer</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--allowed-tools</span> <span class="string">"Read,Write,Bash(npm test)"</span> \
-<br>    <span class="string">"Fiks testfeil og verifiser"</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 16: Resource control -->
-<div class="slide" data-notes="Du kan kontrollere ressursbruk: max-turns begrenser antall steg, max-budget setter en kostgrense i dollar. Viktig for CI-pipelines der du ikke vil ha løpske agenter.">
-  <h2>Ressurskontroll</h2>
-  <p style="margin-bottom:1rem">Hold agenten i tøylene.</p>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Terminal</span>
-    </div>
-    <div class="terminal-body">
-<span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--model</span> sonnet \          <span class="comment"># billigere modell</span>
-<br>    <span class="flag">--effort</span> low \            <span class="comment"># raskere, mindre grundig</span>
-<br>    <span class="flag">--max-turns</span> 10 \          <span class="comment"># maks 10 steg</span>
-<br>    <span class="flag">--max-budget-usd</span> 0.50 \  <span class="comment"># maks 50 cent</span>
-<br>    <span class="string">"Analyser PR #42"</span>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 17: Structured output example with output -->
-<div class="slide" data-notes="Strukturert output gjør Claude til en (nokså) selvdrevet utvikler. Du definerer et JSON-schema, og Claude returnerer alltid data i det formatet. Perfekt for pipelines og automatisering.">
-  <h2>Strukturert output</h2>
-  <div class="two-col" style="margin-top:1rem;grid-template-columns:1.5fr 1fr">
-    <div>
-      <h3 style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem">Kommando</h3>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-        </div>
-        <div class="terminal-body">
-<span class="prompt">$</span> ./gradlew test 2>&1 | claude <span class="flag">-p</span> \
-<br>    <span class="flag">--model</span> haiku \
-<br>    <span class="flag">--output-format</span> json \
-<br>    <span class="flag">--json-schema</span> <span class="string">'{
-<br>      "type": "object",
-<br>      "properties": {
-<br>        "passed":  { "type": "number",  "description": "Passing tests" },
-<br>        "failed":  { "type": "number",  "description": "Failing tests" },
-<br>        "success": { "type": "boolean", "description": "All tests passed" }
-<br>      }
-<br>    }'</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h3 style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Output</h3>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-        </div>
-        <div class="terminal-body">
-{
-<br>  <span class="string">"passed"</span>: 47,
-<br>  <span class="string">"failed"</span>: 3,
-<br>  <span class="string">"success"</span>: <span class="flag">false</span>
-<br>}
-        </div>
-      </div>
-      <p class="muted" style="margin-top:0.5rem;text-align:center;font-size:0.8rem">Alltid gyldig JSON i ditt schema</p>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 18: Stream JSON -->
-<div class="slide" data-notes="Stream-json gir strukturert input og output. Perfekt for pipelines der du trenger å parse resultatet maskinelt.">
-  <h2>Stream JSON</h2>
-  <div class="two-col" style="margin-top:0.5rem;grid-template-columns:1fr 1fr">
-    <div>
-      <h3 style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem">--input-format stream-json</h3>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-        </div>
-        <div class="terminal-body">
-{"<span class="flag">type</span>":"user","<span class="flag">content</span>":"Hei"}
-<br>{"<span class="flag">type</span>":"assistant","<span class="flag">content</span>":"Hei!"}
-<br>{"<span class="flag">type</span>":"user","<span class="flag">content</span>":"2+2?"}
-        </div>
-      </div>
-      <p class="muted" style="margin-top:0.5rem;font-size:0.8rem">Én JSON-linje per melding</p>
-    </div>
-    <div>
-      <h3 style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">--output-format stream-json</h3>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-        </div>
-        <div class="terminal-body">
-{"<span class="flag">type</span>":"assistant","<span class="flag">content</span>":"4",...}
-<br>{"<span class="flag">type</span>":"result","<span class="flag">cost_usd</span>":0.01,...}
-        </div>
-      </div>
-      <p class="muted" style="margin-top:0.5rem;font-size:0.8rem">Maskinlesbar output med metadata</p>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 21: Harness concept -->
-<div class="slide" data-notes="Et harness er scriptet ditt rundt Claude. Det henter oppgaven, bygger prompten, kjører Claude, parser output, validerer, og prøver på nytt om nødvendig. Du eier logikken — Claude er bare en (nokså) selvdrevet utvikler.">
-  <h2>Harness-konseptet</h2>
-  <p style="margin-bottom:1rem">Din logikk rundt Claude &mdash; du eier flyten.</p>
-  <div class="flow">
-    <div class="flow-box teal">Hent oppgave</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">Bygg prompt</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box teal">Kjør Claude</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">Parse output</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box yellow">Valider</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box blue">Lever / Retry</div>
-  </div>
-  <svg viewBox="0 0 560 230" style="width:100%;max-width:620px;margin:1.5rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <rect x="4" y="4" width="552" height="222" rx="12" fill="#f9fbfa" stroke="#cae7b9" stroke-width="2"/>
-    <text x="280" y="34" text-anchor="middle" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">Ditt harness (bash/python/ts)</text>
-    <text x="40" y="68" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">1.</tspan> Hent oppgave fra Linear/GitHub</text>
-    <text x="40" y="94" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">2.</tspan> Bygg prompt med kontekst</text>
-    <text x="40" y="120" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">3.</tspan> <tspan fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="12">claude -p --output-format json</tspan> ...</text>
-    <text x="40" y="146" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">4.</tspan> Valider output (tester, lint, schema)</text>
-    <text x="40" y="172" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">5.</tspan> Feilet? → Juster prompt, prøv igjen</text>
-    <text x="40" y="198" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13"><tspan font-weight="600" fill="#cae7b9">6.</tspan> OK? → Commit, push, opprett PR</text>
-  </svg>
-</div>
-
-<!-- Slide 22: Harness example -->
-<div class="slide" data-notes="Her er et konkret eksempel: et bash-script som henter en issue fra Linear, bygger en prompt, kjører Claude med JSON-output, validerer at testene kjører, og enten retrier eller committer. Enkelt men kraftig.">
-  <h2>Harness-eksempel</h2>
-  <div class="terminal">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">harness.sh</span>
-    </div>
-    <div class="terminal-body" style="font-size:clamp(0.6rem,0.85vw,0.78rem)">
-<span class="keyword">#!/bin/bash</span>
-<br><span class="keyword">ISSUE</span>=<span class="string">"$1"</span>
-<br><span class="keyword">MAX_RETRIES</span>=3
-<br>
-<br><span class="comment"># 1. Hent oppgave</span>
-<br><span class="keyword">TASK</span>=$(linear issue get <span class="string">"$ISSUE"</span> <span class="flag">--json</span>)
-<br>
-<br><span class="comment"># 2. Bygg prompt</span>
-<br><span class="keyword">PROMPT</span>=<span class="string">"Implementer: $(echo $TASK | jq -r .title)
-<br>Beskrivelse: $(echo $TASK | jq -r .description)"</span>
-<br>
-<br><span class="keyword">for</span> i <span class="keyword">in</span> $(seq 1 $MAX_RETRIES); <span class="keyword">do</span>
-<br>  <span class="comment"># 3. Kjør Claude</span>
-<br>  echo <span class="string">"$PROMPT"</span> | claude <span class="flag">-p</span> \
-<br>    <span class="flag">--allowed-tools</span> <span class="string">"Read,Write,Bash(npm test)"</span> \
-<br>    <span class="flag">--max-turns</span> 20
-<br>
-<br>  <span class="comment"># 4. Valider</span>
-<br>  <span class="keyword">if</span> npm test; <span class="keyword">then</span>
-<br>    git add -A && git commit -m <span class="string">"feat: $ISSUE"</span>
-<br>    <span class="keyword">break</span>
-<br>  <span class="keyword">fi</span>
-<br><span class="keyword">done</span>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════
-     DEL 4: PROBLEMS (22-25)
-     ════════════════════════════════════════════ -->
-
-<!-- Slide 26: Section title -->
-<div class="slide section-title" data-notes="Nå kommer vi til elefanten i rommet: selvstendige agenter har reelle problemer. La oss være ærlige om dem.">
-  <h1>Selvstendige agenter<br><span style="font-size:0.5em;opacity:0.6">— problemene</span></h1>
-</div>
-
-<!-- Slide 27: Context rot -->
-<div class="slide" data-notes="Context rot: etter hvert som kontekstvinduet fylles opp, degraderer ytelsen. Agenten glemmer instruksjoner, gjentar feil, og kvaliteten faller. Dette er fundamentalt for transformer-arkitekturen.">
-  <h2>Context rot</h2>
-  <p style="margin-bottom:1rem">Ytelsen degraderer når konteksten fylles opp.</p>
-  <svg viewBox="0 0 600 270" style="width:100%;max-width:650px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="areaGrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#cae7b9"/>
-        <stop offset="55%" stop-color="#cae7b9"/>
-        <stop offset="100%" stop-color="#f3de8a"/>
-      </linearGradient>
-    </defs>
-    <line x1="60" y1="20" x2="60" y2="220" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
-    <line x1="60" y1="220" x2="570" y2="220" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
-    <text x="30" y="125" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" transform="rotate(-90 30 125)">Kvalitet</text>
-    <text x="315" y="250" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12">Kontekstbruk</text>
-    <path d="M60 45 C150 45 250 48 320 65 C380 85 440 130 490 170 C520 195 550 210 570 218 L570 220 L60 220 Z" fill="url(#areaGrad)" opacity="0.25"/>
-    <path d="M60 45 C150 45 250 48 320 65" stroke="#cae7b9" stroke-width="3" fill="none"/>
-    <path d="M320 65 C380 85 440 130 490 170 C520 195 550 210 570 218" stroke="#f3de8a" stroke-width="3" fill="none"/>
-    <line x1="320" y1="30" x2="320" y2="220" stroke="#f3de8a" stroke-width="1" stroke-dasharray="5 4" opacity="0.5"/>
-    <text x="445" y="52" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12" font-weight="500">← her begynner problemene</text>
-  </svg>
-</div>
-
-<!-- Slide 28: Black box + sporbarhet -->
-<div class="slide" data-notes="Når agenten jobber i bakgrunnen, har du ingen innsikt i beslutningene den tar. Hvorfor valgte den den løsningen? Hvilke alternativer vurderte den? Null sporbarhet gjør det umulig å lære av feil.">
-  <h2>Black box &amp; sporbarhet</h2>
-  <p style="margin-bottom:1.5rem">Agenten jobber i bakgrunnen &mdash; null innsikt i beslutninger.</p>
-  <svg viewBox="0 0 460 310" style="width:100%;max-width:500px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <rect x="130" y="8" width="200" height="48" rx="10" fill="#cae7b9"/>
-    <text x="230" y="38" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="500">"Implementer feature X"</text>
-    <path d="M230 56 V92" stroke="#d4cec6" stroke-width="2"/>
-    <polygon points="225,89 230,100 235,89" fill="#d4cec6"/>
-    <rect x="105" y="104" width="250" height="110" rx="12" fill="#023c40"/>
-    <text x="230" y="142" text-anchor="middle" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="22">? ? ? ? ?</text>
-    <text x="230" y="168" text-anchor="middle" fill="rgba(255,247,238,0.4)" font-family="'Raleway',sans-serif" font-size="11">Hvilke valg ble tatt?</text>
-    <text x="230" y="186" text-anchor="middle" fill="rgba(255,247,238,0.4)" font-family="'Raleway',sans-serif" font-size="11">Hvorfor denne løsningen?</text>
-    <path d="M230 214 V250" stroke="#d4cec6" stroke-width="2"/>
-    <polygon points="225,247 230,258 235,247" fill="#d4cec6"/>
-    <rect x="130" y="262" width="200" height="42" rx="10" fill="#cae7b9"/>
-    <text x="230" y="286" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="500">"Ferdig!"</text>
-    <text x="230" y="300" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="10" opacity="0.5">(men er det riktig?)</text>
-  </svg>
-</div>
-
-<!-- Slide 29: No resume + quality decay -->
-<div class="slide" data-notes="Og det verste: krasj betyr start på nytt. Ingen resume, ingen checkpoints. Kombinert med quality decay over tid betyr dette at lange oppgaver er fundamentalt upålitelige med dagens agenter.">
-  <h2>Ingen resume &amp; kvalitetsfall</h2>
-  <div class="two-col" style="margin-top:1.5rem">
-    <div>
-      <h3>Krasj = start på nytt</h3>
-      <ul>
-        <li>Ingen checkpoints</li>
-        <li>Ingen delresultater</li>
-        <li>Tapt kontekst</li>
-        <li>Dobbelt kostnad</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Kvalitetsfall over tid</h3>
-      <ul>
-        <li>Glemmer instruksjoner</li>
-        <li>Gjentar feil</li>
-        <li>Hallusinerer løsninger</li>
-        <li>Ingen ekstern validering</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════
-     DEL 6: RALPH-LOOP & LISA (30-36)
-     ════════════════════════════════════════════ -->
-
-<!-- Slide 30: Section title -->
-<div class="slide section-title" data-notes="Men vi har en løsning. Og den er inspirert av en uventet kilde.">
-  <h1>Selvstendige agenter<br><span style="font-size:0.5em;opacity:0.6">— løsningen</span></h1>
-</div>
-
-<!-- Slide 31: Ralph-loopen -->
-<div class="slide" data-notes="Ralph-loopen: inspiert av Ralph Wiggum. Ideen er enkel — ikke mål AI på første forsøk, mål konvergens over tid. Design for iterasjon, ikke perfeksjon. Korte loops med validering.">
-  <h2>Ralph-loopen</h2>
-  <p class="subtitle" style="font-style:italic;margin-bottom:1rem">"I'm helping!" — Design for iterasjon, ikke perfeksjon.</p>
-  <div class="two-col" style="grid-template-columns:1.3fr 1fr;align-items:start;gap:2rem">
-    <div>
-      <svg viewBox="0 -45 300 200" style="width:100%;max-width:360px;display:block" xmlns="http://www.w3.org/2000/svg">
-        <!-- Forsøk box -->
-        <rect x="10" y="10" width="100" height="50" rx="8" fill="#023c40" stroke="#0a5c63" stroke-width="2"/>
-        <text x="60" y="40" text-anchor="middle" fill="#fff" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Forsøk #N</text>
-        <!-- Arrow to Valider -->
-        <path d="M110 35 H150" stroke="#023c40" stroke-width="3"/>
-        <polygon points="147,28 162,35 147,42" fill="#023c40"/>
-        <!-- Valider box -->
-        <rect x="165" y="10" width="100" height="50" rx="8" fill="#f3de8a" stroke="#d4b82e" stroke-width="2"/>
-        <text x="215" y="40" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Valider</text>
-        <!-- Loop back arrow (Feil) - goes above -->
-        <path d="M215 10 Q215 -15 145 -15 Q60 -15 60 10" stroke="#c0392b" stroke-width="3" fill="none"/>
-        <polygon points="53,7 60,22 67,7" fill="#c0392b"/>
-        <text x="145" y="-25" text-anchor="middle" fill="#c0392b" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">Feil → Retry</text>
-        <!-- OK arrow down -->
-        <path d="M215 60 V95" stroke="#27ae60" stroke-width="3"/>
-        <polygon points="208,92 215,107 222,92" fill="#27ae60"/>
-        <text x="240" y="82" fill="#27ae60" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">OK!</text>
-        <!-- Lever box -->
-        <rect x="165" y="110" width="100" height="40" rx="8" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
-        <text x="215" y="135" text-anchor="middle" fill="#fff" font-family="'Raleway',sans-serif" font-size="13" font-weight="600">Lever!</text>
-      </svg>
-    </div>
-    <div>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-        </div>
-        <div class="terminal-body">
-<span class="prompt">$</span> <span class="flag">while</span> ! ./gradlew test; <span class="flag">do</span>
-<br>    cat prompt.md | claude <span class="flag">-p</span>
-<br>  <span class="flag">done</span>
-        </div>
-      </div>
-      <p class="muted" style="margin-top:0.5rem;font-size:0.85rem">Kjør til testene passerer.</p>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 32: ATDD approach -->
-<div class="slide" data-notes="Acceptance Test Driven Development: tickets i Linear definerer planen. Raskere å iterere og validere tickets enn å validere all kode. Vi bruker /review-ticket skill til dette.">
-  <h2>ATDD &mdash; Acceptance Test Driven Development</h2>
-  <p style="margin-bottom:1rem">Raskere å iterere på tickets i Linear og validere <em>planen</em> enn å validere all kode.</p>
-  <p style="margin-bottom:1rem">Vi bruker <span class="badge badge-mint">/review-ticket</span> skill.</p>
-  <div class="terminal small">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Linear</span>
-    </div>
-    <div class="terminal-body" style="font-size:0.85em">
-<span class="comment"># Title: Implement user auth</span>
-<br>
-<br><span class="keyword">Acceptance criteria:</span>
-<br>- [ ] Login endpoint returns JWT token
-<br>- [ ] Token expires after 24h
-<br>- [ ] Refresh token flow works
-<br>- [ ] Failed login returns 401
-<br>
-<br><span class="keyword">Tech notes:</span>
-<br>Use bcrypt for password hashing
-    </div>
-  </div>
-  <p class="muted" style="margin-top:0.8rem">Valider <em>planen</em> i Linear før full implementasjon.</p>
-</div>
-
-<!-- Slide 33: Lisa intro -->
-<div class="slide" data-notes="Lisa ble bygget for Evenly. Hva om backloggen implementerte seg selv? Tar Ralph-loopen til neste nivå: en langlevende agent som aldri mister kontekst.">
-  <h2>Lisa</h2>
-  <p class="subtitle">Looping Implementor Saving Assumptions</p>
+<!-- Slide 1: Kick off demo -->
+<div class="slide active" data-notes="DEMO: Start Lisa on a prepared ticket in the terminal. Leave it running visibly in the background. We'll come back to it at the end.">
+  <h2>Let's start something running</h2>
   <div class="terminal" style="margin-top:1.5rem">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
@@ -1215,225 +35,556 @@ Bruk: <span class="string">/review-ticket ENG-123</span>
       <div class="terminal-dot green"></div>
       <span class="terminal-title">Terminal</span>
     </div>
-    <div class="terminal-body" style="font-size:clamp(0.9rem,1.3vw,1.2rem)">
-<span class="prompt">$</span> lisa <span class="string">ENG-123</span>
+    <div class="terminal-body" style="font-size:clamp(1rem,1.4vw,1.3rem)">
+<span class="prompt">$</span> lisa <span class="string">ENG-456</span>
+<br>
+<br><span class="output">Fetching ticket from Linear...</span>
+<br><span class="output">Creating branch: lisa/ENG-456-add-webhook-support</span>
+<br><span class="output">Planning implementation...</span>
+<br><span class="dim">█░░░░░░░░░</span>
     </div>
   </div>
-  <p style="margin-top:1.5rem;max-width:600px">
-    Autonom ticket-implementering. Mister aldri kontekst, vedlikeholder state på tvers av sesjoner.
-  </p>
+  <p class="muted" style="margin-top:1.5rem">We'll come back to this.</p>
 </div>
 
-<!-- Slide 34: Lisa architecture -->
-<div class="slide" data-notes="Lisa har tre faser. PRE-WORK: hent ticket, opprett branch, planlegg 5-20 steg. WORK LOOP: velg steg, implementer, test/review, commit, lagre state. POST-WORK: konklusjon, review guide, oppdater Linear.">
-  <h2>Lisa &mdash; arkitektur</h2>
-  <svg viewBox="0 0 740 340" style="width:100%;max-width:800px;margin:0.8rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <!-- Phase labels -->
-    <text x="100" y="20" text-anchor="middle" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">PRE-WORK</text>
-    <text x="370" y="20" text-anchor="middle" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">WORK LOOP</text>
-    <text x="630" y="20" text-anchor="middle" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="13" font-weight="600">POST-WORK</text>
-    <!-- Phase dividers -->
-    <line x1="200" y1="10" x2="200" y2="330" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
-    <line x1="520" y1="10" x2="520" y2="330" stroke="#d4cec6" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>
-    <!-- PRE-WORK boxes -->
-    <rect x="25" y="40" width="150" height="36" rx="8" fill="#023c40"/>
-    <text x="100" y="63" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Hent ticket</text>
-    <path d="M100 76 V90" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="96,88 100,96 104,88" fill="#cae7b9" opacity="0.5"/>
-    <rect x="25" y="100" width="150" height="36" rx="8" fill="#023c40"/>
-    <text x="100" y="123" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Opprett branch</text>
-    <path d="M100 136 V150" stroke="#cae7b9" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="96,148 100,156 104,148" fill="#cae7b9" opacity="0.5"/>
-    <rect x="25" y="160" width="150" height="36" rx="8" fill="#023c40"/>
-    <text x="100" y="183" text-anchor="middle" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="12">Plan 5-20 steps</text>
-    <!-- Arrow to WORK LOOP -->
-    <path d="M175 178 H225" stroke="#cae7b9" stroke-width="2"/>
-    <polygon points="222,173 233,178 222,183" fill="#cae7b9"/>
-    <!-- WORK LOOP - circular arrangement -->
-    <rect x="240" y="45" width="130" height="32" rx="8" fill="#023c40"/>
-    <text x="305" y="66" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">1. Velg step</text>
-    <rect x="380" y="85" width="130" height="32" rx="8" fill="#023c40"/>
-    <text x="445" y="106" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">2. Implementer</text>
-    <rect x="380" y="145" width="130" height="32" rx="8" fill="#023c40"/>
-    <text x="445" y="166" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">3. Test → Review</text>
-    <rect x="380" y="205" width="130" height="32" rx="8" fill="#023c40"/>
-    <text x="445" y="226" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">4. Commit</text>
-    <rect x="240" y="245" width="130" height="32" rx="8" fill="#023c40"/>
-    <text x="305" y="266" text-anchor="middle" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="11">5. Lagre state</text>
-    <!-- Loop arrows -->
-    <!-- Step 1 → Step 2 (curve down-right) -->
-    <path d="M370 61 Q400 61 400 85" stroke="#afcbff" stroke-width="1.5" fill="none" opacity="0.6"/>
-    <polygon points="396,82 400,92 404,82" fill="#afcbff" opacity="0.6"/>
-    <!-- Step 2 → Step 3 -->
-    <path d="M445 117 V138" stroke="#afcbff" stroke-width="1.5" opacity="0.6"/>
-    <polygon points="441,135 445,145 449,135" fill="#afcbff" opacity="0.6"/>
-    <!-- Step 3 → Step 4 -->
-    <path d="M445 177 V198" stroke="#afcbff" stroke-width="1.5" opacity="0.6"/>
-    <polygon points="441,195 445,205 449,195" fill="#afcbff" opacity="0.6"/>
-    <!-- Step 4 → Step 5 (curve down-left) -->
-    <path d="M380 221 Q350 221 350 245" stroke="#afcbff" stroke-width="1.5" fill="none" opacity="0.6"/>
-    <polygon points="346,242 350,252 354,242" fill="#afcbff" opacity="0.6"/>
-    <!-- Loop back arrow (from state back to step) -->
-    <path d="M240 261 H220 V61 H240" stroke="#afcbff" stroke-width="2" fill="none" stroke-dasharray="5 3" opacity="0.7"/>
-    <polygon points="237,56 248,61 237,66" fill="#afcbff" opacity="0.7"/>
-    <text x="210" y="160" fill="#afcbff" font-family="'Raleway',sans-serif" font-size="9" opacity="0.8" text-anchor="middle" transform="rotate(-90 210,160)">neste step</text>
-    <!-- Arrow to POST-WORK -->
-    <path d="M510 155 H540" stroke="#f3de8a" stroke-width="2"/>
-    <polygon points="537,150 548,155 537,160" fill="#f3de8a"/>
-    <!-- POST-WORK boxes -->
-    <rect x="555" y="55" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="632" y="78" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Konklusjon</text>
-    <path d="M632 91 V110" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="628,108 632,116 636,108" fill="#f3de8a" opacity="0.5"/>
-    <rect x="555" y="120" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="632" y="143" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Review guide</text>
-    <path d="M632 156 V175" stroke="#f3de8a" stroke-width="1.5" opacity="0.5"/>
-    <polygon points="628,173 632,181 636,173" fill="#f3de8a" opacity="0.5"/>
-    <rect x="555" y="185" width="155" height="36" rx="8" fill="#023c40"/>
-    <text x="632" y="208" text-anchor="middle" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="12">Oppdater Linear</text>
+<!-- Slide 2: Title -->
+<div class="slide" data-notes="Introduce yourself: Ole Ravna, founder of Evenly. Energy/critical infrastructure background. Today's talk: what the Ralph Loop taught me about planning-driven autonomous development.">
+  <h1 style="font-size:clamp(3.5rem,9vw,7rem);margin-bottom:0.2em">Stop Coding,<br>Start Planning</h1>
+  <div style="width:50px;height:2px;background:var(--mint);margin:0 auto 1.5rem;opacity:0.5"></div>
+  <p class="subtitle">What the Ralph Loop Taught Me</p>
+  <p class="muted" style="margin-top:2.5rem;font-size:clamp(0.95rem,1.4vw,1.15rem)">Ole Ravna &mdash; Evenly &mdash; ole@evenly.no</p>
+  <p class="muted" style="font-size:clamp(0.9rem,1.3vw,1.05rem)">Claude Code Meetup Oslo</p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     ACT 1: THE RALPH LOOP (4-10)
+     ════════════════════════════════════════════ -->
+
+<!-- Slide 4: Section title -->
+<div class="slide section-title" data-notes="Act 1: The Ralph Loop. We start with why the simplest approach — just repeating the prompt — actually works, and then why it's not enough.">
+  <h1>The Ralph Loop</h1>
+</div>
+
+<!-- Slide 6: The Ralph Loop -->
+<div class="slide ralph-slide" data-notes="Credit Geoffrey Huntley and his original post at ghuntley.com/loop. The idea is deceptively simple: read the ticket, plan, implement, test, review, commit, repeat. In its simplest form it's a meme — just repeat the same prompt.">
+  <div class="ralph-content">
+    <h2>The Loop</h2>
+    <p style="margin-bottom:1.5rem" class="muted">Credit: Geoffrey Huntley &mdash; ghuntley.com/loop</p>
+    <div class="ralph-code">
+      <span class="keyword">while true</span>; <span class="keyword">do</span> cat PROMPT.md | claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span>; <span class="keyword">done</span>
+    </div>
+  </div>
+  <img src="ralph.png" alt="Ralph Wiggum" class="ralph-img">
+</div>
+
+<!-- Slide: A more realistic loop -->
+<div class="slide" data-notes="This is a real example of the Ralph loop in practice. A bash for-loop iterates N times, calling Claude in headless mode with acceptEdits permissions. The two key files are prd.json (the plan) and progress.txt (accumulated context). Each iteration reads both, works on the highest-priority feature, updates progress, and commits.">
+  <h2>A more realistic loop</h2>
+  <p class="muted" style="margin-bottom:0.5rem">Simplified from Matt Pocock's video on his use of the Ralph loop</p>
+  <div class="terminal" style="margin-top:1rem;max-width:820px">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">loop.sh</span>
+    </div>
+    <div class="terminal-body" style="font-size:clamp(0.62rem,0.9vw,0.82rem);white-space:pre;line-height:1.55"><span class="keyword">for</span> ((i=1; i&lt;=$MAX_ITERATIONS; i++)); <span class="keyword">do</span>
+  echo <span class="string">"Iteration $i"</span>
+  result=$(claude <span class="flag">--permission-mode</span> acceptEdits \
+    <span class="flag">-p</span> <span class="string">"<span style="background:rgba(202,231,185,0.3);color:var(--mint);font-weight:500;padding:1px 2px;border-radius:2px">@plans/product-requirement-document.json</span> <span style="background:rgba(202,231,185,0.3);color:var(--mint);font-weight:500;padding:1px 2px;border-radius:2px">@progress.txt</span> \
+    1. Find the highest-priority feature to work on. \
+    2. Check that types and tests pass. \
+    3. Update the PRD with the work that was done. \
+    4. Append your progress to progress.txt. \
+    5. Make a git commit of that feature. \
+    ONLY WORK ON A SINGLE FEATURE."</span>)
+<span class="keyword">done</span></div>
+  </div>
+  <p class="muted" style="margin-top:0.8rem;font-size:clamp(0.75rem,1vw,0.9rem)"><span style="color:var(--yellow-text)">@plans/product-requirement-document.json</span> &mdash; the plan &nbsp;&nbsp; <span style="color:var(--yellow-text)">@progress.txt</span> &mdash; accumulated context</p>
+</div>
+
+<!-- Slide 7: Why repetition works -->
+<div class="slide" data-notes="Why does looping help? Long conversations suffer from context rot — the model loses focus as context grows. Each fresh iteration resets the context window with a clean prompt plus accumulated results. Short, focused calls beat one long sprawling session.">
+  <h2>Why does repetition work?</h2>
+  <p style="margin-bottom:1rem">Long sessions suffer from <strong>context rot</strong>. Each loop resets to <span class="badge badge-mint">clean prompt + accumulated progress</span>.</p>
+  <svg viewBox="0 0 500 220" style="width:100%;max-width:600px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <!-- Axis -->
+    <line x1="60" y1="20" x2="60" y2="180" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <line x1="60" y1="180" x2="460" y2="180" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <text x="30" y="105" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" transform="rotate(-90 30 105)">Output quality</text>
+    <text x="260" y="205" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12">Task length</text>
+    <!-- Looped calls (sawtooth staying high) -->
+    <path d="M60 40 L130 52 L135 40 L205 52 L210 40 L280 52 L285 40 L355 52 L360 40 L430 52 L435 40 L460 44" stroke="#2e7d50" stroke-width="3" fill="none"/>
+    <text x="390" y="28" fill="#2e7d50" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Looped calls</text>
+    <!-- Single session (holds then drops sharply) -->
+    <path d="M60 40 C120 42 180 48 230 55 C260 62 280 80 300 110 C320 140 360 158 460 165" stroke="#b86e1d" stroke-width="3" fill="none"/>
+    <text x="390" y="175" fill="#b86e1d" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Single session</text>
+    <!-- Break point marker -->
+    <line x1="265" y1="25" x2="265" y2="180" stroke="#b86e1d" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+    <text x="265" y="18" text-anchor="middle" fill="#b86e1d" font-family="'Raleway',sans-serif" font-size="10" opacity="0.7">context rot</text>
   </svg>
 </div>
 
-<!-- Slide 35: Assumptions system -->
-<div class="slide" data-notes="Nøkkelen til Lisa er assumptions-systemet. Hver beslutning logges med en prioritet og ID. Pre-work assumptions (P.1, P.2) og iterasjons-assumptions (1.1, 2.1). Lagres i Linear og git trailers.">
-  <h2>Assumptions</h2>
-  <p style="margin-bottom:1rem">Hver beslutning logges &mdash; full sporbarhet.</p>
-  <div class="two-col">
+<!-- Slide 8: High quality input -->
+<div class="slide" data-notes="Autonomous agents are bounded by the quality of their input. The real work has shifted — it's no longer coding, it's crafting the prompt. And we already have better tools than markdown files for this: project management tools like Linear.">
+  <h2>Autonomous agents require high quality input</h2>
+  <p style="margin-bottom:1.5rem;font-size:clamp(1.6rem,3vw,2.5rem)">💩 in = 💩 out</p>
+  <p style="max-width:700px;margin-bottom:1rem">
+    We've moved the <span class="badge badge-mint">real work earlier</span>
+  </p>
+  <p style="max-width:700px">
+    The work now isn't coding &mdash; it's making the prompt
+  </p>
+</div>
+
+<!-- Slide 5: Assertion 1 -->
+<div class="slide key-message" data-notes="This is our first assertion. Most people obsess over which model generates better code. But the real constraint is what you feed the model. A perfect code generator with a vague prompt produces vague code.">
+  <div class="assertion-num">1</div>
+  <blockquote>
+    "The value of an AI coding agent is bounded by the quality of its plan, not its code generation."
+  </blockquote>
+  <p class="muted" style="font-style:normal">&mdash; Ole Ravna</p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     ACT 2: PLANNING IS DEVELOPMENT (10-14)
+     ════════════════════════════════════════════ -->
+
+<!-- Slide 10: Section title -->
+<div class="slide section-title" data-notes="Act 2: If the plan is what matters, then planning isn't a phase before development — it IS development.">
+  <h1>Planning is<br>Development</h1>
+</div>
+
+<!-- Slide 11: Assertion 2 -->
+<div class="slide key-message" data-notes="Second assertion. If planning drives the output, then planning IS the work. Every developer needs to think like an architect — not because coding is dead, but because the skill is elevated.">
+  <div class="assertion-num">2</div>
+  <blockquote style="margin-bottom:2rem;max-width:1000px;font-size:clamp(1.5rem,3.2vw,2.6rem)">
+    "Planning isn't a phase before development &mdash; it is development. Therefore all developers must become architects."
+  </blockquote>
+  <p class="muted" style="font-style:normal">&mdash; Also Ole Ravna</p>
+</div>
+
+<!-- Slide 12: The architect anecdote -->
+<div class="slide" data-notes="In my world — energy, critical infrastructure — the organization is cautious about agentic AI. But as an architect I already plan solutions to business problems and hand them to developers to implement. The irony is — what I do today is exactly what every developer will do with agents.">
+  <h2>Moving from development to planning</h2>
+  <div class="two-col" style="margin-top:1.5rem;max-width:900px">
     <div>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">Linear-kommentar</span>
-        </div>
-        <div class="terminal-body" style="font-size:clamp(0.6rem,0.85vw,0.75rem)">
-<span class="hl">Assumptions:</span>
-<br>
-<br><span class="flag">P.1</span> Bruker eksisterende auth-
-<br>    modul (ikke nytt system)
-<br><span class="flag">P.2</span> PostgreSQL for lagring
-<br>    (ikke Redis)
-<br>
-<br><span class="flag">1.1</span> Legger til rate limiting
-<br>    med express-rate-limit
-<br><span class="flag">2.1</span> Endret til sliding window
-<br>    etter testfeil
-        </div>
-      </div>
+      <h3 style="color:var(--muted)">Before agents</h3>
+      <div class="diagram" style="font-size:clamp(0.8rem,1.1vw,1rem)">
+Architect  →  plans solution
+Developer  →  writes code
+Developer  →  verifies code
+
+<span class="hl">Only architects plan.</span></div>
     </div>
     <div>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">git log</span>
-        </div>
-        <div class="terminal-body" style="font-size:clamp(0.6rem,0.85vw,0.75rem)">
-<span class="string">feat(lisa): [ENG-123] step 3:</span>
-<span class="string">  add webhook</span>
+      <h3 style="color:var(--mint-text)">With agents</h3>
+      <div class="diagram" style="font-size:clamp(0.8rem,1.1vw,1rem)">
+Developer  →  plans solution
+Agent      →  writes code
+Developer  →  verifies code
+
+<span class="hl">Everyone plans.</span></div>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem" class="muted">The shift: from "coding" to "planning and refining."</p>
+</div>
+
+<!-- Slide 14: The implication -->
+<div class="slide" data-notes="If planning is development, then the skill every developer needs is planning. That's what architects do — therefore all developers must become architects. This isn't diminishing coding skill — it's elevating the role. You need deep technical understanding to plan well for agents.">
+  <h2>The implication</h2>
+  <div style="max-width:1400px;margin:0 auto">
+    <p style="margin-bottom:1.5rem;font-size:clamp(1.1rem,1.8vw,1.5rem)">
+      If planning is development, the skill every developer needs is planning.
+    </p>
+    <p style="font-size:clamp(1.1rem,1.8vw,1.5rem)">
+      This isn't diminishing coding skill, it's elevating the role.
+    </p>
+  </div>
+</div>
+
+<!-- Slide: Use project management tools -->
+<div class="slide" data-notes="We already have commonly used tools for planning development tasks — project management tools like Linear, Jira, etc. Instead of planning in markdown files, use the tools your team already knows.">
+  <h2>Why do all agent tools use markdown files for planning?</h2>
+  <p style="max-width:800px;font-size:clamp(1.1rem,1.8vw,1.5rem)">
+    Your team already uses <span class="badge badge-mint">project management tools</span> for planning and tracking progress &mdash; so should your agents
+  </p>
+  <p style="margin-top:1.5rem;font-size:clamp(1.1rem,1.8vw,1.5rem)">We wanted to make a simple harness that does this.</p>
+</div>
+
+<!-- Slide: Introducing Lisa CLI -->
+<div class="slide" data-notes="Lisa is an autonomous looping harness built on Claude Code. It uses Linear for planning and progress tracking — the same tool your team already uses for project management.">
+  <h2>Introducing Lisa CLI</h2>
+  <p class="subtitle">An autonomous looping harness using Linear for planning and progress tracking</p>
+  <div style="display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">
+    <div class="terminal" style="max-width:700px;flex:1">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Terminal</span>
+      </div>
+      <div class="terminal-body" style="font-size:clamp(0.65rem,0.9vw,0.8rem)">
+<span class="prompt">❯</span> lisa <span class="string">ENG-123</span>
+<br><span class="flag">[lisa]</span> Starting Lisa for <span class="string">ENG-123</span>
+<br><span class="flag">[lisa]</span> Max iterations: 30, effort: high, model: opus
+<br><span class="flag">[lisa]</span> Git: commit only (no push)
+<br><span class="flag">[lisa]</span> Ticket: Add webhook support for notifications
+<br><span class="flag">[lisa]</span> No existing branches, creating eng-123-add-webhook-sup
+<br><span class="flag">[lisa]</span> Created branch eng-123-add-webhook-sup
+<br><span class="flag">[lisa]</span> No existing state, starting fresh
+<br><span class="flag">[lisa]</span> Planning... <span class="dim">3s (total: 12s)</span>
+      </div>
+    </div>
+  </div>
+  <img src="lisa.png" alt="Lisa and Ralph" style="position:absolute;right:2rem;top:35%;transform:translateY(-50%);height:clamp(250px,40vh,400px);border-radius:12px">
+</div>
+
+<!-- ════════════════════════════════════════════
+     ACT 3: BUILDING BLOCKS (15-20)
+     ════════════════════════════════════════════ -->
+
+<!-- Slide 15: Section title -->
+<div class="slide section-title" data-notes="Act 3: So how do you actually build this? Let's look at the building blocks that make autonomous development possible.">
+  <h1>Building Blocks</h1>
+</div>
+
+<!-- Slide 16: Claude Code in headless mode -->
+<div class="slide" data-notes="With --print, Claude runs once and exits — no interaction, just output. It works as a function in your code. Add --json-schema and you get structured output: predictable, parseable responses that your state machine can act on. This is the key differentiator between AI as a chatbot and AI as a component.">
+  <h2>Headless Claude Code</h2>
+  <p style="margin-bottom:0.5rem">With <code>--print</code>, Claude runs once and exits — no interaction, just <span class="badge badge-mint">output</span>. It works as a function in your code.</p>
+  <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Bash</span>
+      </div>
+      <div class="terminal-body">
+<span class="comment"># Call Claude, get output</span>
+<br><span class="prompt">$</span> claude <span class="flag">--print</span> <span class="string">"Explain this code"</span>
 <br>
-<br><span class="comment">Lisa-Iteration:</span> 5
-<br><span class="comment">Lisa-Step:</span> 3
-<br><span class="comment">Lisa-Assumptions:</span> P.1, 5.1, 5.2
-        </div>
+<br><span class="comment"># Pipe context in</span>
+<br><span class="prompt">$</span> cat src/auth.ts | claude <span class="flag">-p</span> <span class="string">"Security issues?"</span>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Python</span>
+      </div>
+      <div class="terminal-body" style="white-space:nowrap;font-size:clamp(0.6rem,0.85vw,0.78rem)">
+<span class="keyword">def</span> <span class="fn">claude</span>(prompt, model, schema):
+<br>&nbsp;&nbsp;cmd = [<span class="string">"claude"</span>, <span class="string">"-p"</span>, <span class="string">"--model"</span>, model, <span class="string">"--json-schema"</span>, json.dumps(schema)]
+<br>&nbsp;&nbsp;result = subprocess.run(cmd, input=prompt, capture_output=<span class="keyword">True</span>, text=<span class="keyword">True</span>)
+<br>&nbsp;&nbsp;<span class="keyword">return</span> json.loads(result.stdout)
       </div>
     </div>
   </div>
 </div>
 
-<!-- Slide 36: Review Guide -->
-<div class="slide" data-notes="Etter implementering genererer Lisa en review guide. Hjelper reviewer å forstå endringene: formål, entry point, flow, og kritiske punkter å fokusere på.">
-  <h2>Review Guide</h2>
-  <p style="margin-bottom:1rem">Lisa genererer en guide for revieweren.</p>
-  <div class="terminal" style="max-width:600px;margin:0 auto">
+<!-- Slide 16b: Structured output -->
+<div class="slide" data-notes="Structured output makes Claude predictable. Define a JSON schema, get valid JSON back every time. Perfect for pipelines and automation.">
+  <h2>Structured output</h2>
+  <div class="terminal" style="margin-top:1rem">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+    </div>
+    <div class="terminal-body">
+<span class="prompt">$</span> ./gradlew test 2&gt;&amp;1 | claude <span class="flag">-p</span> \
+<br>    <span class="flag">--model</span> haiku \
+<br>    <span class="flag">--output-format</span> json \
+<br>    <span class="flag">--json-schema</span> <span class="string">'{</span>
+<br>      <span class="string">"type": "object",</span>
+<br>      <span class="string">"properties": {</span>
+<br>        <span class="string">"passed": { "type": "number", "description": "Passing tests" },</span>
+<br>        <span class="string">"failed": { "type": "number", "description": "Failing tests" },</span>
+<br>        <span class="string">"success": { "type": "boolean", "description": "All tests passed" }</span>
+<br>      <span class="string">}</span>
+<br>    <span class="string">}'</span>
+<br>
+<br><span class="comment"># Output:</span>
+<br>{ <span class="string">"passed"</span>: 47, <span class="string">"failed"</span>: 3, <span class="string">"success"</span>: false }
+    </div>
+  </div>
+  <p class="muted" style="margin-top:0.75rem;font-size:0.85rem">Always valid JSON matching your schema</p>
+</div>
+
+<!-- Slide 17: Autonomy with control -->
+<div class="slide" data-notes="Three levels of permission control. Repo settings.json defines default allowed tools — no flags needed. --permission-mode acceptEdits lets Claude read and write files freely but asks before running commands. --allowed-tools gives precise per-call control over exactly which tools are available.">
+  <h2>Tooling permission</h2>
+  <p style="margin-bottom:0.5rem">Different levels of permission control for headless runs.</p>
+  <div class="terminal" style="margin-top:0.5rem">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
       <div class="terminal-dot yellow"></div>
       <div class="terminal-dot green"></div>
       <span class="terminal-title">Terminal</span>
     </div>
-    <div class="terminal-body" style="font-size:clamp(0.55rem,0.8vw,0.7rem);text-align:left">
-<span class="hl">📋 Review Guide: ENG-123 - Add webhook</span>
+    <div class="terminal-body">
+<span class="comment"># Uses repo permissions from .claude/settings.json</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="string">"Fix the failing tests"</span>
 <br>
-<br><span class="string">Purpose</span>
-<br>  Enables real-time notifications...
+<br><span class="comment"># Accept file edits, prompt for commands</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--permission-mode</span> acceptEdits <span class="string">"Fix the failing tests"</span>
 <br>
-<br><span class="string">Entry Point</span>
-<br>  POST /api/webhooks → WebhookController
+<br><span class="comment"># Precise control — whitelist specific tools</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--allowed-tools</span> <span class="string">"Read,Write,Bash(npm test)"</span> <span class="string">"Fix the failing tests"</span>
 <br>
-<br><span class="string">Flow</span>
-<br>  1. Request validated...
-<br>  2. WebhookService.create()...
-<br>
-<br><span class="string">Key Review Points</span>
-<br>  1. <span class="flag">⚠</span> WebhookDispatcher.send()
-<br>     Async HTTP call with 5s timeout
+<br><span class="comment"># Nuclear option (sandboxed environments only)</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span> <span class="string">"Fix the failing tests"</span>
     </div>
   </div>
 </div>
 
-<!-- Slide 37: Lisa naming anecdote -->
-<div class="slide bg-soft" data-notes="Hvordan fikk Lisa navnet sitt? Vi startet med Ralph-loopen — men vi ville vite hvilke antagelser som ble gjort. Lisa er den smarte søsteren som skriver ned alt. Looping Implementor Saving Assumptions.">
-  <h2>Hvorfor "Lisa"?</h2>
-  <div style="display:flex;gap:4rem;align-items:center;justify-content:center;flex-wrap:wrap">
-    <div style="max-width:600px">
-      <p style="margin-bottom:1.5rem">
-        Vi hadde Ralph-loopen &mdash; iterasjon med validering.
-      </p>
-      <p style="margin-bottom:1.5rem">
-        Men vi ville også vite <em>hvilke antagelser</em> som ble gjort.
-      </p>
-      <p style="margin-bottom:1rem">
-        Lisa er den smarte søsteren som skriver ned alt.
-      </p>
-      <p style="font-style:italic;opacity:0.7;margin-top:1rem">
-        <strong>L</strong>ooping <strong>I</strong>mplementor <strong>S</strong>aving <strong>A</strong>ssumptions
-      </p>
+<!-- Slide 18: Cost and speed -->
+<div class="slide" data-notes="Not every call needs Opus. Planning, implementation, and review use Opus. Iteration review uses Opus with low effort. Text extraction uses Haiku, and log text generation uses Haiku with low effort. --effort low reduces thinking for simple tasks.">
+  <h2>Cost &amp; speed optimization</h2>
+  <p style="margin-bottom:1rem">Not every call needs the heavy model.</p>
+  <div class="two-col" style="max-width:950px">
+    <div>
+      <div class="terminal small" style="max-width:none">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">Model selection</span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Heavy thinking</span>
+<br><span class="prompt">$</span> claude <span class="flag">--model</span> opus
+<br>
+<br><span class="comment"># Quick extraction</span>
+<br><span class="prompt">$</span> claude <span class="flag">--model</span> haiku <span class="flag">--effort</span> low
+        </div>
+      </div>
     </div>
-    <img src="https://upload.wikimedia.org/wikipedia/en/a/ac/I_Love_Lisa_promo.jpg" alt="I Love Lisa" style="max-height:280px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15)">
+    <div>
+      <div class="diagram" style="font-size:clamp(0.75rem,1.05vw,0.95rem)">
+<span class="hl">Lisa mixes models:</span>
+
+Planning, implementing, review → <span class="hl-blue">Opus</span>
+Quick iteration review         → <span class="hl-blue">Opus</span> + low effort
+Text extraction                → <span class="hl-yellow">Haiku</span>
+Log &amp; commit generation        → <span class="hl-yellow">Haiku</span> + low effort
+
+Right model for the right task.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 18b: Lisa's full pipeline -->
+<div class="slide" data-notes="Point Lisa at a ticket and this is the full pipeline. Fetch gathers context — ticket, subtasks, blocking relations. Branch creates or resumes a ticket branch. Plan has Claude explore the codebase and create granular steps. Then the loop: execute, verify, commit, save state — up to 30 iterations. Final review does a comprehensive code review with a fix loop. Conclude generates a reviewer guide posted to Linear.">
+  <h2>The state machine</h2>
+  <p style="margin-bottom:0.8rem">Point Lisa at a ticket and it will:</p>
+  <div class="flow" style="gap:0.35rem;margin:0.6rem 0">
+    <div class="flow-box teal">Fetch</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box teal">Branch</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box teal">Plan</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.3rem;max-width:720px;margin:0.3rem auto;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+    <span>fetch Linear ticket(s)</span>
+    <span>creates new branch</span>
+    <span>split into tasks</span>
+  </div>
+  <div class="pipeline-loop" style="position:relative;border:2px solid rgba(202,231,185,0.4);border-radius:14px;padding:1.2rem 1.5rem 1rem;margin:0.4rem auto;max-width:720px">
+    <span style="position:absolute;top:-0.7em;left:1.5rem;background:var(--cream);padding:0 0.5em;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--mint-text);letter-spacing:0.05em">LOOP &times;30</span>
+    <div class="flow" style="gap:0.35rem;margin:0.3rem 0">
+      <div class="flow-box mint">Execute</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Verify</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Commit</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Save&nbsp;State</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.3rem;margin-top:0.4rem;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+      <span>implement code</span>
+      <span>tests + review</span>
+      <span>git trailers</span>
+      <span>Linear comment</span>
+    </div>
+  </div>
+  <div class="flow" style="gap:0.35rem;margin:0.6rem 0">
+    <div class="flow-box yellow">Final Review</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box yellow">Conclude</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:520px;margin-top:0.3rem;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+    <span>code review fix loop</span>
+    <span>reviewer guide &rarr; Linear</span>
   </div>
 </div>
 
 <!-- ════════════════════════════════════════════
-     CLOSING (38-39)
+     ACT 4: VERIFICATION (21-26)
      ════════════════════════════════════════════ -->
 
-<!-- Slide 38: Summary diagram -->
-<div class="slide" data-notes="Oppsummering: tre lag. Kontekst (CLAUDE.md, agents, skills, MCP) gir Claude kunnskap. CLI (claude -p med flagg) gir kontroll. Og harness (din logikk) gir pålitelighet.">
-  <h2>Alt henger sammen</h2>
-  <svg viewBox="0 0 600 340" style="width:100%;max-width:660px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <!-- KONTEKST layer -->
-    <rect x="30" y="8" width="540" height="85" rx="12" fill="#023c40"/>
-    <text x="60" y="34" fill="#cae7b9" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">KONTEKST</text>
-    <text x="60" y="56" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">CLAUDE.md  ·  Agents  ·  Skills  ·  MCP</text>
-    <text x="60" y="78" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir Claude kunnskap om prosjektet</text>
-    <!-- Arrow -->
-    <path d="M300 93 V118" stroke="#cae7b9" stroke-width="2" opacity="0.5"/>
-    <polygon points="295,116 300,126 305,116" fill="#cae7b9" opacity="0.5"/>
-    <!-- CLI layer -->
-    <rect x="30" y="130" width="540" height="85" rx="12" fill="#023c40"/>
-    <text x="60" y="156" fill="#afcbff" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">CLI</text>
-    <text x="60" y="178" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">claude -p  ·  --model  ·  --allowed-tools  ·  --output-format json</text>
-    <text x="60" y="200" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir deg kontroll over agenten</text>
-    <!-- Arrow -->
-    <path d="M300 215 V240" stroke="#afcbff" stroke-width="2" opacity="0.5"/>
-    <polygon points="295,238 300,248 305,238" fill="#afcbff" opacity="0.5"/>
-    <!-- HARNESS layer -->
-    <rect x="30" y="252" width="540" height="85" rx="12" fill="#023c40"/>
-    <text x="60" y="278" fill="#f3de8a" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600">HARNESS</text>
-    <text x="60" y="300" fill="rgba(255,247,238,0.7)" font-family="'Raleway',sans-serif" font-size="13">Din logikk  ·  Validering  ·  Retry  ·  Assumptions</text>
-    <text x="60" y="322" fill="rgba(255,247,238,0.45)" font-family="'Raleway',sans-serif" font-size="12">→ Gir pålitelighet og forutsigbarhet</text>
-  </svg>
+<!-- Slide 21: Section title -->
+<div class="slide section-title" data-notes="Act 4: Verification. Agents can generate code, but can they verify it's correct? This is the hardest part.">
+  <h1>Verification</h1>
 </div>
 
-<!-- Slide 39: Takk -->
-<div class="slide bg-teal" data-notes="Takk for oppmerksomheten! Spørsmål? Lisa er open source på GitHub. Ta kontakt om du vil vite mer.">
-  <h1 style="font-size:clamp(3rem,6vw,5rem)">Takk!</h1>
+<!-- Slide 22: Assertion 3 -->
+<div class="slide key-message" data-notes="Third and final assertion. Static analysis, code quality, test coverage — agents are good at these. But business logic verification — does this solve the right problem? — is still fundamentally hard.">
+  <div class="assertion-num">3</div>
+  <blockquote style="font-size:clamp(1.8rem,3.8vw,3.2rem);max-width:900px;margin-bottom:2rem">
+    "Agents can generate and analyze code, but verifying business correctness is still unsolved."
+  </blockquote>
+  <p class="muted" style="font-style:normal">&mdash; Still Ole Ravna</p>
+</div>
+
+<!-- Slide 23: What agents are good at -->
+<div class="slide" data-notes="Lisa's review phase does this well. Claude checks the implementation against conventions, catches common patterns, flags security issues. Static analysis is a sweet spot for agents.">
+  <h2>What agents are good at</h2>
+  <div class="two-col" style="margin-top:1.5rem;max-width:1200px">
+    <div>
+      <h3 style="color:var(--mint-text)">Strong</h3>
+      <ul>
+        <li>Static analysis (quality, types, security)</li>
+        <li>Catching known problems (conventions, N+1, coverage gaps)</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--yellow-text)">Weak</h3>
+      <ul>
+        <li>"Is this the right solution?"</li>
+        <li>"Did the reviewer have enough context to judge?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 24: Lisa's partial answers -->
+<div class="slide" data-notes="Lisa doesn't claim to solve verification. But it provides tools to make review faster and more informed: reviewer guides, assumption tracking, Linear comments for team visibility, and the review-ticket skill to validate before implementation.">
+  <h2>Lisa's partial answers</h2>
+  <div class="two-col" style="margin-top:1rem;max-width:900px">
+    <div>
+      <div class="terminal small" style="max-width:none">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">Reviewer Guide</span>
+        </div>
+        <div class="terminal-body" style="font-size:clamp(0.55rem,0.8vw,0.7rem)">
+<span class="hl">Review Guide: ENG-456</span>
+<br>
+<br><span class="string">Purpose:</span> Real-time webhook notifications
+<br><span class="string">Entry:</span> POST /api/webhooks &rarr; WebhookController
+<br><span class="string">Flow:</span>
+<br>&nbsp;&nbsp;1. Request validated by schema
+<br>&nbsp;&nbsp;2. WebhookService.create() persists
+<br>&nbsp;&nbsp;3. Dispatcher queues async delivery
+<br>
+<br><span class="string">Key Review Points:</span>
+<br>&nbsp;&nbsp;<span class="flag">&#9888;</span> WebhookDispatcher.send()
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Async HTTP call with 5s timeout
+        </div>
+      </div>
+    </div>
+    <div>
+      <ul>
+        <li><strong>Reviewer guide</strong> &mdash; purpose, flow, risk flags</li>
+        <li><strong>Assumption tracking</strong> &mdash; every decision recorded (P.1, 1.1, 2.1...)</li>
+        <li><strong>Linear comments</strong> &mdash; team visibility into progress</li>
+        <li><strong>review-ticket skill</strong> &mdash; validate before implementation</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DEMO PAYOFF (26-28)
+     ════════════════════════════════════════════ -->
+
+<!-- Slide 26: Section title -->
+<div class="slide section-title" data-notes="Time to see it in action. Let's check on what we started at the beginning.">
+  <h1>Demo</h1>
+</div>
+
+<!-- Slide 27: Review-ticket demo -->
+<div class="slide bg-teal" data-notes="DEMO: Run the review-ticket skill on a ticket. Show how it explores the codebase and validates the ticket before any code is written. This is planning as development — we're refining the ticket, not just reading it.">
+  <h2>review-ticket</h2>
+  <p style="margin-bottom:1.5rem">Validate the ticket against the codebase <em>before</em> implementation.</p>
+  <div class="terminal" style="max-width:600px">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">Claude Code</span>
+    </div>
+    <div class="terminal-body" style="font-size:clamp(0.9rem,1.3vw,1.2rem)">
+<span class="prompt">&gt;</span> /review-ticket <span class="string">ENG-456</span>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:1.5rem;color:rgba(255,247,238,0.6)">LIVE DEMO</p>
+</div>
+
+<!-- Slide 28: Check running Lisa -->
+<div class="slide bg-teal" data-notes="DEMO: Switch to the terminal where Lisa has been running since the opening. Show the assumptions it has made (P.1, P.2...). Show progress on steps — which are done, which is current.">
+  <h2>The running instance</h2>
+  <p style="margin-bottom:1rem">Let's check on what we started at the beginning.</p>
+  <ul style="max-width:500px">
+    <li>Assumptions made (P.1, P.2...)</li>
+    <li>Steps completed vs in-progress</li>
+    <li>Linear comment with live state</li>
+    <li>Git commits with trailers</li>
+  </ul>
+  <p class="muted" style="margin-top:1.5rem;color:rgba(255,247,238,0.6)">LIVE DEMO</p>
+</div>
+
+<!-- Slide 29: Pre-finished instance -->
+<div class="slide bg-teal" data-notes="DEMO: Show a previously completed Lisa run. Walk through the Linear comment: plan checklist, assumptions, iteration count. Show the reviewer guide output. This is what the loop produces — a human reviewer gets this guide and can merge with confidence or catch what the agent missed.">
+  <h2>The finished run</h2>
+  <p style="margin-bottom:1rem">What the loop produces end-to-end.</p>
+  <ul style="max-width:600px">
+    <li>Linear comment &mdash; plan checklist, assumptions, iterations</li>
+    <li>Reviewer guide &mdash; purpose, entry point, flow, risks</li>
+    <li>Git history &mdash; one commit per step with trailers</li>
+  </ul>
+  <p style="margin-top:1.5rem;font-style:italic;opacity:0.8">
+    A human reviewer gets this guide and can merge with confidence &mdash; or catch what the agent missed.
+  </p>
+  <p class="muted" style="margin-top:1rem;color:rgba(255,247,238,0.6)">LIVE DEMO</p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     CLOSING (30-31)
+     ════════════════════════════════════════════ -->
+
+<!-- Slide 30: Three assertions recap -->
+<div class="slide" data-notes="Quick recap of the three assertions: planning bounds agent value, planning is development, and business verification remains unsolved. These are the key takeaways.">
+  <h2>Three assertions</h2>
+  <div style="text-align:left;max-width:750px;margin:0 auto">
+    <p style="margin-bottom:1.2rem;padding-left:1.5em;position:relative">
+      <span class="badge badge-mint" style="position:absolute;left:-0.5em">1</span>
+      The value of an AI coding agent is bounded by the quality of its <strong>plan</strong>.
+    </p>
+    <p style="margin-bottom:1.2rem;padding-left:1.5em;position:relative">
+      <span class="badge badge-blue" style="position:absolute;left:-0.5em">2</span>
+      Planning is development. All developers must become <strong>architects</strong>.
+    </p>
+    <p style="padding-left:1.5em;position:relative">
+      <span class="badge badge-yellow" style="position:absolute;left:-0.5em">3</span>
+      Verifying <strong>business correctness</strong> is still unsolved.
+    </p>
+  </div>
+</div>
+
+<!-- Slide 31: Thank you -->
+<div class="slide bg-teal" data-notes="Thank you! Lisa is open source on GitHub. Questions welcome.">
+  <h1 style="font-size:clamp(3.5rem,9vw,7rem)">Thank you!</h1>
   <div style="text-align:left;margin-top:2rem">
     <p style="margin-bottom:1rem;font-size:1.4rem"><span style="color:var(--mint)">Ole Ravna</span></p>
-    <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Webstep &amp; Evenly</p>
+    <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Evenly &mdash; ole@evenly.no</p>
   </div>
   <div style="position:absolute;bottom:5rem;left:2rem;text-align:center">
     <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Lisa CLI</p>
@@ -1442,19 +593,12 @@ Bruk: <span class="string">/review-ticket ENG-123</span>
     </div>
     <p style="font-size:0.8rem;margin-top:0.5rem;opacity:0.8">github.com/evenly-energy/lisa</p>
   </div>
-  <div style="position:absolute;bottom:5rem;right:2rem;text-align:center">
-    <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Gi tilbakemelding</p>
-    <div style="background:white;padding:0.5rem;border-radius:8px;display:inline-block">
-      <img src="feedback-qr.png" alt="QR code for feedback" style="display:block;width:120px;height:120px">
-    </div>
-  </div>
 </div>
 
 </div><!-- /presentation -->
 
 <!-- Slide counter -->
-<div class="slide-counter" id="slideCounter">1 / 39</div>
-
+<div class="slide-counter" id="slideCounter">1 / 30</div>
 
 <!-- Speaker notes -->
 <div class="speaker-notes" id="speakerNotes">
