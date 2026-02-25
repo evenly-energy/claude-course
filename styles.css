@@ -380,10 +380,9 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
 
 .blob {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(220px);
+  border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%;
+  filter: blur(280px);
   opacity: 0.4;
-  animation: float 20s ease-in-out infinite;
 }
 
 .blob-1 {
@@ -392,7 +391,6 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   background: var(--mint);
   top: -15%;
   right: -15%;
-  animation-delay: 0s;
 }
 
 .blob-2 {
@@ -401,7 +399,6 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   background: var(--blue);
   bottom: -10%;
   left: -10%;
-  animation-delay: -7s;
 }
 
 .blob-3 {
@@ -410,13 +407,6 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   background: var(--yellow);
   top: 30%;
   left: 40%;
-  animation-delay: -14s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
 }
 
 /* ── Film grain overlay ── */
@@ -425,13 +415,12 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
+  opacity: 0.02;
+  background: url("noise.png");
 }
 
 /* ── Staggered content reveal ── */
-.slide.active > *:not(.assertion-num) {
+.slide.active > *:not(.assertion-num):not(.ralph-img) {
   animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .slide.active > *:nth-child(1) { animation-delay: 0.05s; }
@@ -479,6 +468,45 @@ body.hide-cursor, body.hide-cursor * { cursor: none !important; }
   margin: 1rem auto 0;
   opacity: 0.4;
 }
+
+/* ── Ralph slide ── */
+.ralph-slide .ralph-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ralph-img {
+  position: absolute;
+  right: clamp(2rem, 6vw, 6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  height: clamp(140px, 25vh, 260px);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
+  animation: none !important;
+}
+.ralph-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.8rem, 1.15vw, 1.05rem);
+  line-height: 1.6;
+  color: var(--mint);
+  background: var(--terminal-bg);
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 12px 40px rgba(2,60,64,0.2);
+  border: 1px solid rgba(202,231,185,0.08);
+  position: relative;
+  margin: 0 auto;
+  text-align: center;
+}
+.ralph-code .keyword { color: #c792ea; }
+.ralph-code .flag { color: var(--blue); }
 
 /* ── Key message assertion number ── */
 .slide.key-message .assertion-num {

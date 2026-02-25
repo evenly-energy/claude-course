@@ -11,10 +11,10 @@ sections:
     slides: [10, 11, 12, 13, 14]
 
   - name: "Act III: Building Blocks"
-    slides: [15, 16, 17, 18, 19, 20]
+    slides: [15, 16, 17, 18, 18b]
 
   - name: "Act IV: Verification"
-    slides: [21, 22, 23, 24, 25]
+    slides: [21, 22, 23, 24]
 
   - name: Demo Payoff
     slides: [26, 27, 28, 29]
@@ -24,27 +24,6 @@ sections:
 
 slides:
   1:
-    type: title
-    heading: "From Loop to Harness"
-    subtitle: "Planning-Driven Autonomous Development with Lisa CLI"
-    author: "Ole Ravna — Evenly"
-    event: "Claude Code Meetup Oslo"
-    notes: >
-      Introduce yourself: Ole Ravna, consultant at Webstep, founder of Evenly.
-      Energy/critical infrastructure background. Today's talk: how planning
-      drives autonomous development — from simple loops to a full harness.
-
-  2:
-    type: default
-    image: disclaimer.png
-    text: >
-      Disclaimer: this entire presentation is an AI experiment.
-      All slides built in raw HTML with pure vibing.
-    notes: >
-      Important caveat: this entire presentation is an experiment in
-      AI-generated content. All slides built in raw HTML with pure vibing.
-
-  3:
     type: default
     heading: "Let's start something running"
     terminal:
@@ -61,9 +40,29 @@ slides:
       DEMO: Start Lisa on a prepared ticket in the terminal. Leave it running
       visibly in the background. We'll come back to it at the end.
 
+  2:
+    type: title
+    heading: "From Loop to Harness"
+    subtitle: "Planning-Driven Autonomous Development with Lisa CLI"
+    author: "Ole Ravna — Evenly"
+    event: "Claude Code Meetup Oslo"
+    notes: >
+      Introduce yourself: Ole Ravna, consultant at Webstep, founder of Evenly.
+      Energy/critical infrastructure background. Today's talk: how planning
+      drives autonomous development — from simple loops to a full harness.
+
+  3:
+    type: default
+    image: disclaimer.png
+    text: >
+      Disclaimer: this entire presentation is an AI experiment.
+      All slides built in raw HTML with pure vibing.
+    notes: >
+      Important caveat: this entire presentation is an experiment in
+      AI-generated content. All slides built in raw HTML with pure vibing.
+
   4:
     type: section-title
-    act: "Act I"
     heading: "The Ralph Loop"
     notes: >
       Act 1: The Ralph Loop. We start with why the simplest approach — just
@@ -82,17 +81,20 @@ slides:
 
   6:
     type: default
+    class: ralph-slide
     heading: "The Loop"
     credit: "Geoffrey Huntley — ghuntley.com/loop"
-    flow:
-      - Read ticket
-      - Plan
-      - Implement
-      - Test
-      - Review
-      - Commit
-    loop: true
-    text: "In its simplest form — just repeat the same prompt."
+    image:
+      src: ralph.png
+      class: ralph-img
+      position: absolute-right-center
+    code:
+      class: ralph-code
+      content: "while true; do cat PROMPT.md | claude -p --dangerously-skip-permissions; done"
+    layout_notes: >
+      Content wrapped in .ralph-content div (abs positioned, inset:0, flexbox centered).
+      Ralph image absolutely positioned on right side, independent of content flow.
+      Code block styled as dark pill with mono font, no terminal chrome.
     notes: >
       Credit Geoffrey Huntley and his original post at ghuntley.com/loop. The
       idea is deceptively simple: read the ticket, plan, implement, test, review,
@@ -156,7 +158,6 @@ slides:
 
   10:
     type: section-title
-    act: "Act II"
     heading: "Planning is Development"
     notes: >
       Act 2: If the plan is what matters, then planning isn't a phase before
@@ -175,7 +176,7 @@ slides:
 
   12:
     type: default
-    heading: "The architect shift"
+    heading: "Moving from development to planning"
     columns:
       left:
         label: "Before agents"
@@ -202,39 +203,20 @@ slides:
 
   13:
     type: default
-    heading: "How Lisa plans"
-    text: "Before writing code, Lisa generates 5–20 granular steps."
-    terminal:
-      title: Lisa plan output
-      lines:
-        - "Step 1: Create WebhookController"
-        - "  Files: CREATE src/controllers/webhook.ts"
-        - "  Template: src/controllers/notification.ts"
-        - ""
-        - "Step 2: Add WebhookService with retry logic"
-        - "  Files: CREATE src/services/webhook.ts"
-        - "  Template: src/services/email.ts"
-        - ""
-        - "Step 3: Add database migration"
-        - "  Files: CREATE migrations/20250224_webhooks.sql"
-        - ""
-        - "Assumptions:"
-        - "  P.1 Using existing auth middleware (not new system)"
-        - "  P.2 PostgreSQL for storage (not Redis)"
+    heading: "Why do all agent tools use markdown files for planning?"
+    text: "Your team already uses project management tools for planning and tracking progress — so should your agents"
+    footer: "We wanted to make a simple harness that does this."
     notes: >
-      Before writing any code, Lisa explores the codebase and generates 5-20
-      granular steps. Each step has file operations (create/modify/delete),
-      similar implementations to use as templates. Planning assumptions are
-      tracked explicitly with IDs — every decision is recorded.
+      We already have commonly used tools for planning development tasks —
+      project management tools like Linear, Jira, etc. Instead of planning
+      in markdown files, use the tools your team already knows.
 
   14:
     type: default
     heading: "The implication"
     paragraphs:
       - "If planning is development, the skill every developer needs is planning."
-      - "That's what architects do."
-      - "This isn't diminishing coding skill — it's elevating the role."
-    subtext: "You need deep technical understanding to plan well for agents."
+      - "This isn't diminishing coding skill, it's elevating the role."
     notes: >
       If planning is development, then the skill every developer needs is
       planning. That's what architects do — therefore all developers must become
@@ -243,7 +225,6 @@ slides:
 
   15:
     type: section-title
-    act: "Act III"
     heading: "Building Blocks"
     notes: >
       Act 3: So how do you actually build this? Let's look at the building
@@ -251,50 +232,65 @@ slides:
 
   16:
     type: default
-    heading: "Claude Code as a function"
-    text: "Not a chatbot — a building block."
-    columns:
-      left:
-        terminal:
-          title: Headless mode
-          lines:
-            - "# Call Claude, get output"
-            - '$ claude --print "Explain this code"'
-            - ""
-            - "# Pipe context in"
-            - '$ cat src/auth.ts | claude -p "Security issues?"'
-      right:
-        terminal:
-          title: Structured output
-          lines:
-            - "# Predictable JSON responses"
-            - "$ claude -p \\"
-            - "    --output-format json \\"
-            - "    --json-schema '{...}' \\"
-            - '    "Analyze this PR"'
+    heading: "Headless Claude Code"
+    text: "With --print, Claude runs once and exits — no interaction, just output. It works as a function in your code."
+    terminals:
+      - title: Bash
+        lines:
+          - "# Call Claude, get output"
+          - '$ claude --print "Explain this code"'
+          - ""
+          - "# Pipe context in"
+          - '$ cat src/auth.ts | claude -p "Security issues?"'
+      - title: Python
+        lines:
+          - 'def claude(prompt, model, schema):'
+          - '  cmd = ["claude", "-p", "--model", model, "--json-schema", json.dumps(schema)]'
+          - '  result = subprocess.run(cmd, input=prompt, capture_output=True, text=True)'
+          - '  return json.loads(result.stdout)'
     notes: >
-      claude --print makes Claude Code headless. Not a chatbot — a building block.
-      Add --json-schema and you get structured output: predictable, parseable
-      responses that your state machine can act on. This is the key differentiator
-      between AI as a chatbot and AI as a component.
+      With --print, Claude runs once and exits — no interaction, just output. It works as a function in your code.
+
+  16b:
+    type: default
+    heading: "Structured output"
+    terminal:
+      lines:
+        - "$ ./gradlew test 2>&1 | claude -p \\"
+        - "    --model haiku \\"
+        - "    --output-format json \\"
+        - "    --json-schema '{...}'"
+        - ""
+        - "# Output:"
+        - '{ "passed": 47, "failed": 3, "success": false }'
+    footer: "Always valid JSON matching your schema"
+    notes: >
+      Structured output makes Claude predictable. Define a JSON schema,
+      get valid JSON back every time. Perfect for pipelines and automation.
 
   17:
     type: default
-    heading: "Autonomy with control"
+    heading: "Tooling permission"
+    text: "Different levels of permission control for headless runs."
     terminal:
       title: Terminal
       lines:
-        - "# Full access (sandboxed environments only)"
-        - '$ claude -p --dangerously-skip-permissions "Fix all lint errors"'
+        - "# Uses repo permissions from .claude/settings.json"
+        - '$ claude -p "Fix the failing tests"'
         - ""
-        - "# Precise control — whitelist tools"
-        - "$ claude -p \\"
-        - '    --allowed-tools "Read,Write,Bash(npm test)" \\'
-        - '    "Fix the failing tests and verify"'
+        - "# Accept file edits, prompt for commands"
+        - '$ claude -p --permission-mode acceptEdits "Fix the failing tests"'
+        - ""
+        - "# Precise control — whitelist specific tools"
+        - '$ claude -p --allowed-tools "Read,Write,Bash(npm test)" "Fix the failing tests"'
+        - ""
+        - "# Nuclear option (sandboxed environments only)"
+        - '$ claude -p --dangerously-skip-permissions "Fix the failing tests"'
     notes: >
-      You need the agent to run without prompting you, but you whitelist exactly
-      which tools it can use. --dangerously-skip-permissions gives full access
-      (sandbox only), --allowed-tools gives precise control. Controlled autonomy.
+      Three levels of permission control. Repo settings.json defines default
+      allowed tools — no flags needed. --permission-mode acceptEdits lets Claude
+      read and write freely but asks before commands. --allowed-tools gives
+      precise per-call control.
 
   18:
     type: default
@@ -308,63 +304,58 @@ slides:
             - "# Heavy thinking"
             - "$ claude --model opus"
             - ""
-            - "# Daily work"
-            - "$ claude --model sonnet"
-            - ""
             - "# Quick extraction"
             - "$ claude --model haiku --effort low"
       right:
         diagram: |
           Lisa mixes models:
 
-          Planning       → Opus
-          Implementation → Sonnet
-          Extraction     → Haiku + low effort
-          Review         → Sonnet
+          Planning, implementing, review → Opus
+          Quick iteration review        → Opus + low effort
+          Text extraction               → Haiku
+          Log & commit generation       → Haiku + low effort
 
           Right model for the right task.
     notes: >
-      Not every call needs Opus. Use cheap fast models for extraction, parsing,
-      simple checks. Save the heavy model for planning and implementation. Lisa
-      mixes models based on task complexity. --effort low reduces thinking for
-      simple tasks.
-
-  19:
-    type: default
-    heading: "The state machine"
-    text: "Each state transition is explicit, resumable, traceable."
-    flow:
-      row1: [SELECT_STEP, EXECUTE_WORK, HANDLE_ASSUMPTIONS]
-      row2: [CHECK_COMPLETION, VERIFY_STEP, COMMIT_CHANGES, SAVE_STATE]
-    footer: "If Lisa crashes — re-run and it picks up where it left off."
-    notes: >
-      Lisa chains these calls into a reliable state machine. Each state
-      transition is explicit, resumable, traceable. If Lisa crashes or you stop
-      it, re-run and it picks up where it left off from the Linear comment state.
-
-  20:
-    type: default
-    heading: "Lisa CLI"
-    subtitle: "Looping Implementor Saving Assumptions"
-    links:
-      repo: "github.com/evenly-energy/lisa"
-      qr: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/evenly-energy/lisa"
-    terminal:
-      title: Terminal
-      lines:
-        - "$ npm install -g @evenly-energy/lisa"
-        - "$ lisa ENG-123"
-    notes: >
-      Lisa is open source. Built on top of Claude Code's headless mode. Check
-      it out on GitHub.
+      Not every call needs Opus. Planning, implementation, and review use Opus.
+      Iteration review uses Opus with low effort. Text extraction uses Haiku,
+      and log text generation uses Haiku with low effort. Lisa mixes models
+      based on task complexity. --effort low reduces thinking for simple tasks.
 
   21:
     type: section-title
-    act: "Act IV"
     heading: "Verification"
     notes: >
       Act 4: Verification. Agents can generate code, but can they verify it's
       correct? This is the hardest part.
+
+  18b:
+    type: default
+    heading: "The state machine"
+    text: "Point Lisa at a ticket and it will:"
+    pipeline:
+      setup: [Fetch, Branch, Plan]
+      setup_details:
+        Fetch: "fetch Linear ticket(s)"
+        Branch: "creates new branch"
+        Plan: "split into tasks"
+      loop:
+        label: "LOOP x30"
+        steps: [Execute, Verify, Commit, Save State]
+        details:
+          Execute: "implement code"
+          Verify: "tests + review, fix failures"
+          Commit: "structured message with assumptions in git trailers"
+          Save State: "update Linear comment with plan progress"
+      teardown: [Final Review, Conclude]
+      teardown_details:
+        Final Review: "comprehensive code review, fix loop until approved"
+        Conclude: "reviewer guide — entry points, flow, error handling, key review points → Linear"
+    notes: >
+      Point Lisa at a ticket and this is the full pipeline. Fetch gathers context.
+      Branch creates or resumes. Plan has Claude explore and create steps. The loop: execute, verify, commit, save state — up
+      to 30 iterations. Final review with fix loop. Conclude generates a reviewer
+      guide posted to Linear.
 
   22:
     type: key-message
@@ -384,19 +375,13 @@ slides:
       left:
         label: Strong
         bullets:
-          - "Code quality & conventions"
-          - "Test coverage gaps"
-          - "Security patterns (OWASP)"
-          - "Type errors & null safety"
-          - "N+1 queries & performance"
+          - "Static analysis (quality, types, security)"
+          - "Catching known problems (conventions, N+1, coverage gaps)"
       right:
         label: Weak
         bullets:
-          - "Business logic correctness"
-          - "Domain model alignment"
-          - '"Does the webhook fire at the right time?"'
-          - '"Does the event name match the domain?"'
-          - "Verifying the reviewer's judgment"
+          - '"Is this the right solution?"'
+          - '"Did the reviewer have enough context to judge?"'
     notes: >
       Lisa's review phase does this well. Claude checks the implementation
       against conventions, catches common patterns, flags security issues.
@@ -434,20 +419,8 @@ slides:
       Linear comments for team visibility, and the review-ticket skill to
       validate before implementation.
 
-  25:
-    type: default
-    heading: "Honesty"
-    paragraphs:
-      - "This is active exploration, not a solved problem."
-      - "Lisa is meant to explore solutions — not claim to have found them."
-    notes: >
-      Let's be honest: this is active exploration, not a solved problem. Lisa
-      is meant to explore solutions — not claim to have found them. We're all
-      figuring this out together.
-
   26:
     type: section-title
-    act: Payoff
     heading: "Demo"
     notes: >
       Time to see it in action. Let's check on what we started at the beginning.
@@ -525,7 +498,4 @@ slides:
         label: Lisa CLI
         url: "github.com/evenly-energy/lisa"
         qr: "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://github.com/evenly-energy/lisa"
-      feedback:
-        label: Feedback
-        qr_image: feedback-qr.png
     notes: "Thank you! Lisa is open source on GitHub. Questions welcome."

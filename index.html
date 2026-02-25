@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>From Loop to Harness — Planning-Driven Autonomous Development with Lisa CLI</title>
+<title>Stop Coding, Start Planning — What the Ralph Loop Taught Me</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
@@ -25,28 +25,8 @@
      OPENING (1-3)
      ════════════════════════════════════════════ -->
 
-<!-- Slide 1: Title -->
-<div class="slide active" data-notes="Introduce yourself: Ole Ravna, consultant at Webstep, founder of Evenly. Energy/critical infrastructure background. Today's talk: how planning drives autonomous development — from simple loops to a full harness.">
-  <h1 style="font-size:clamp(3.5rem,9vw,7rem);margin-bottom:0.2em">From Loop<br>to Harness</h1>
-  <div style="width:50px;height:2px;background:var(--mint);margin:0 auto 1.5rem;opacity:0.5"></div>
-  <p class="subtitle">Planning-Driven Autonomous Development with Lisa CLI</p>
-  <p class="muted" style="margin-top:2.5rem">Ole Ravna &mdash; Evenly</p>
-  <p class="muted">Claude Code Meetup Oslo</p>
-</div>
-
-<!-- Slide 2: Disclaimer -->
-<div class="slide" data-notes="Important caveat: this entire presentation is an experiment in AI-generated content. All slides built in raw HTML with pure vibing.">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;height:100%">
-    <img src="disclaimer.png" alt="AI experiment" style="max-width:600px;width:90%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.15)">
-    <p style="font-size:clamp(1.1rem,2.5vw,1.6rem);text-align:center;max-width:800px;line-height:1.6">
-      <span class="badge badge-mint">Disclaimer:</span> this entire presentation is an AI experiment.<br>
-      All slides built in raw HTML with pure vibing.
-    </p>
-  </div>
-</div>
-
-<!-- Slide 3: Kick off demo -->
-<div class="slide" data-notes="DEMO: Start Lisa on a prepared ticket in the terminal. Leave it running visibly in the background. We'll come back to it at the end.">
+<!-- Slide 1: Kick off demo -->
+<div class="slide active" data-notes="DEMO: Start Lisa on a prepared ticket in the terminal. Leave it running visibly in the background. We'll come back to it at the end.">
   <h2>Let's start something running</h2>
   <div class="terminal" style="margin-top:1.5rem">
     <div class="terminal-bar">
@@ -67,14 +47,94 @@
   <p class="muted" style="margin-top:1.5rem">We'll come back to this.</p>
 </div>
 
+<!-- Slide 2: Title -->
+<div class="slide" data-notes="Introduce yourself: Ole Ravna, founder of Evenly. Energy/critical infrastructure background. Today's talk: what the Ralph Loop taught me about planning-driven autonomous development.">
+  <h1 style="font-size:clamp(3.5rem,9vw,7rem);margin-bottom:0.2em">Stop Coding,<br>Start Planning</h1>
+  <div style="width:50px;height:2px;background:var(--mint);margin:0 auto 1.5rem;opacity:0.5"></div>
+  <p class="subtitle">What the Ralph Loop Taught Me</p>
+  <p class="muted" style="margin-top:2.5rem;font-size:clamp(0.95rem,1.4vw,1.15rem)">Ole Ravna &mdash; Evenly &mdash; ole@evenly.no</p>
+  <p class="muted" style="font-size:clamp(0.9rem,1.3vw,1.05rem)">Claude Code Meetup Oslo</p>
+</div>
+
 <!-- ════════════════════════════════════════════
      ACT 1: THE RALPH LOOP (4-10)
      ════════════════════════════════════════════ -->
 
 <!-- Slide 4: Section title -->
 <div class="slide section-title" data-notes="Act 1: The Ralph Loop. We start with why the simplest approach — just repeating the prompt — actually works, and then why it's not enough.">
-  <div class="act-label">Act I</div>
   <h1>The Ralph Loop</h1>
+</div>
+
+<!-- Slide 6: The Ralph Loop -->
+<div class="slide ralph-slide" data-notes="Credit Geoffrey Huntley and his original post at ghuntley.com/loop. The idea is deceptively simple: read the ticket, plan, implement, test, review, commit, repeat. In its simplest form it's a meme — just repeat the same prompt.">
+  <div class="ralph-content">
+    <h2>The Loop</h2>
+    <p style="margin-bottom:1.5rem" class="muted">Credit: Geoffrey Huntley &mdash; ghuntley.com/loop</p>
+    <div class="ralph-code">
+      <span class="keyword">while true</span>; <span class="keyword">do</span> cat PROMPT.md | claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span>; <span class="keyword">done</span>
+    </div>
+  </div>
+  <img src="ralph.png" alt="Ralph Wiggum" class="ralph-img">
+</div>
+
+<!-- Slide: A more realistic loop -->
+<div class="slide" data-notes="This is a real example of the Ralph loop in practice. A bash for-loop iterates N times, calling Claude in headless mode with acceptEdits permissions. The two key files are prd.json (the plan) and progress.txt (accumulated context). Each iteration reads both, works on the highest-priority feature, updates progress, and commits.">
+  <h2>A more realistic loop</h2>
+  <p class="muted" style="margin-bottom:0.5rem">Simplified from Matt Pocock's video on his use of the Ralph loop</p>
+  <div class="terminal" style="margin-top:1rem;max-width:820px">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">loop.sh</span>
+    </div>
+    <div class="terminal-body" style="font-size:clamp(0.62rem,0.9vw,0.82rem);white-space:pre;line-height:1.55"><span class="keyword">for</span> ((i=1; i&lt;=$MAX_ITERATIONS; i++)); <span class="keyword">do</span>
+  echo <span class="string">"Iteration $i"</span>
+  result=$(claude <span class="flag">--permission-mode</span> acceptEdits \
+    <span class="flag">-p</span> <span class="string">"<span style="background:rgba(202,231,185,0.3);color:var(--mint);font-weight:500;padding:1px 2px;border-radius:2px">@plans/product-requirement-document.json</span> <span style="background:rgba(202,231,185,0.3);color:var(--mint);font-weight:500;padding:1px 2px;border-radius:2px">@progress.txt</span> \
+    1. Find the highest-priority feature to work on. \
+    2. Check that types and tests pass. \
+    3. Update the PRD with the work that was done. \
+    4. Append your progress to progress.txt. \
+    5. Make a git commit of that feature. \
+    ONLY WORK ON A SINGLE FEATURE."</span>)
+<span class="keyword">done</span></div>
+  </div>
+  <p class="muted" style="margin-top:0.8rem;font-size:clamp(0.75rem,1vw,0.9rem)"><span style="color:var(--yellow-text)">@plans/product-requirement-document.json</span> &mdash; the plan &nbsp;&nbsp; <span style="color:var(--yellow-text)">@progress.txt</span> &mdash; accumulated context</p>
+</div>
+
+<!-- Slide 7: Why repetition works -->
+<div class="slide" data-notes="Why does looping help? Long conversations suffer from context rot — the model loses focus as context grows. Each fresh iteration resets the context window with a clean prompt plus accumulated results. Short, focused calls beat one long sprawling session.">
+  <h2>Why does repetition work?</h2>
+  <p style="margin-bottom:1rem">Long sessions suffer from <strong>context rot</strong>. Each loop resets to <span class="badge badge-mint">clean prompt + accumulated progress</span>.</p>
+  <svg viewBox="0 0 500 220" style="width:100%;max-width:600px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
+    <!-- Axis -->
+    <line x1="60" y1="20" x2="60" y2="180" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <line x1="60" y1="180" x2="460" y2="180" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
+    <text x="30" y="105" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" transform="rotate(-90 30 105)">Output quality</text>
+    <text x="260" y="205" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12">Task length</text>
+    <!-- Looped calls (sawtooth staying high) -->
+    <path d="M60 40 L130 52 L135 40 L205 52 L210 40 L280 52 L285 40 L355 52 L360 40 L430 52 L435 40 L460 44" stroke="#2e7d50" stroke-width="3" fill="none"/>
+    <text x="390" y="28" fill="#2e7d50" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Looped calls</text>
+    <!-- Single session (holds then drops sharply) -->
+    <path d="M60 40 C120 42 180 48 230 55 C260 62 280 80 300 110 C320 140 360 158 460 165" stroke="#b86e1d" stroke-width="3" fill="none"/>
+    <text x="390" y="175" fill="#b86e1d" font-family="'Raleway',sans-serif" font-size="12" font-weight="600">Single session</text>
+    <!-- Break point marker -->
+    <line x1="265" y1="25" x2="265" y2="180" stroke="#b86e1d" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+    <text x="265" y="18" text-anchor="middle" fill="#b86e1d" font-family="'Raleway',sans-serif" font-size="10" opacity="0.7">context rot</text>
+  </svg>
+</div>
+
+<!-- Slide 8: High quality input -->
+<div class="slide" data-notes="Autonomous agents are bounded by the quality of their input. The real work has shifted — it's no longer coding, it's crafting the prompt. And we already have better tools than markdown files for this: project management tools like Linear.">
+  <h2>Autonomous agents require high quality input</h2>
+  <p style="margin-bottom:1.5rem;font-size:clamp(1.6rem,3vw,2.5rem)">💩 in = 💩 out</p>
+  <p style="max-width:700px;margin-bottom:1rem">
+    We've moved the <span class="badge badge-mint">real work earlier</span>
+  </p>
+  <p style="max-width:700px">
+    The work now isn't coding &mdash; it's making the prompt
+  </p>
 </div>
 
 <!-- Slide 5: Assertion 1 -->
@@ -83,88 +143,7 @@
   <blockquote>
     "The value of an AI coding agent is bounded by the quality of its plan, not its code generation."
   </blockquote>
-</div>
-
-<!-- Slide 6: The Ralph Loop -->
-<div class="slide" data-notes="Credit Geoffrey Huntley and his original post at ghuntley.com/loop. The idea is deceptively simple: read the ticket, plan, implement, test, review, commit, repeat. In its simplest form it's a meme — just repeat the same prompt.">
-  <h2>The Loop</h2>
-  <p style="margin-bottom:0.5rem" class="muted">Credit: Geoffrey Huntley &mdash; ghuntley.com/loop</p>
-  <div class="flow" style="margin-top:1.5rem">
-    <div class="flow-box teal">Read ticket</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">Plan</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box teal">Implement</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">Test</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box teal">Review</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box yellow">Commit</div>
-  </div>
-  <svg viewBox="0 0 500 60" style="width:100%;max-width:550px;margin:0.5rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <path d="M450 10 Q480 10 480 30 Q480 50 250 50 Q20 50 20 30 Q20 10 50 10" stroke="var(--blue)" stroke-width="2" fill="none" stroke-dasharray="6 4" opacity="0.5"/>
-    <polygon points="47,4 56,10 47,16" fill="var(--blue)" opacity="0.5"/>
-    <text x="250" y="46" text-anchor="middle" fill="var(--blue)" font-family="'Raleway',sans-serif" font-size="12" opacity="0.7">repeat</text>
-  </svg>
-  <p style="margin-top:0.5rem">In its simplest form &mdash; just repeat the same prompt.</p>
-</div>
-
-<!-- Slide 7: Repetition works -->
-<div class="slide" data-notes="This isn't just a meme. Leviathan, Kalman and Matias (2025) showed that prompt repetition won 47 out of 70 benchmark-model combinations with zero losses. No increase in output length or latency — repetition happens in the parallelizable prefill stage. Reasoning models already learn to repeat the user's request via RL — the Ralph loop mirrors what models naturally want to do.">
-  <h2>Repetition actually works</h2>
-  <p style="margin-bottom:1.5rem" class="muted">Leviathan, Kalman &amp; Matias (2025) &mdash; arxiv.org/abs/2512.14982</p>
-  <div class="two-col" style="max-width:850px">
-    <div>
-      <div class="diagram" style="text-align:center;font-size:clamp(0.8rem,1.1vw,1rem)">
-<span class="hl" style="font-size:2.5em;display:block;margin-bottom:0.3em">47 / 70</span>
-benchmark-model combinations
-where repetition <span class="hl">won</span>
-
-<span class="hl-yellow">0 losses</span></div>
-    </div>
-    <div>
-      <ul>
-        <li>No increase in output length or latency</li>
-        <li>Repetition happens in the parallelizable prefill stage</li>
-        <li>RL-trained reasoning models already repeat the user's request internally</li>
-        <li>The loop mirrors what models naturally want to do</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- Slide 8: Structured repetition -->
-<div class="slide" data-notes="Each iteration of the Ralph loop isn't blind repetition — it's repetition with accumulated context. The plan carries forward, test results feed back, review findings get incorporated. This is what separates a productive loop from just hitting run again.">
-  <h2>Structured repetition</h2>
-  <p style="margin-bottom:1.5rem">Each iteration isn't blind &mdash; it's repetition with <span class="badge badge-mint">accumulated context</span>.</p>
-  <div class="diagram" style="max-width:700px">
-<span class="hl">Iteration 1:</span>  prompt + ticket
-<span class="hl">Iteration 2:</span>  prompt + ticket + <span class="hl-blue">test results</span>
-<span class="hl">Iteration 3:</span>  prompt + ticket + test results + <span class="hl-yellow">review findings</span>
-<span class="hl">Iteration 4:</span>  prompt + ticket + test results + review + <span class="hl-blue">fix feedback</span>
-
-Each loop carries forward what came before.</div>
-</div>
-
-<!-- Slide 9: Bounded by input -->
-<div class="slide" data-notes="But the loop is bounded by its input. You can loop forever on a vague ticket and get nowhere. The quality of the plan — not the quality of code generation — is the binding constraint. This is where most people stop.">
-  <h2>Bounded by input</h2>
-  <p style="margin-bottom:1.5rem;font-size:clamp(1.2rem,2vw,1.8rem)">You can loop forever on a vague ticket and get <em>nowhere</em>.</p>
-  <svg viewBox="0 0 500 200" style="width:100%;max-width:550px;margin:1rem auto;display:block" xmlns="http://www.w3.org/2000/svg">
-    <!-- Axis -->
-    <line x1="60" y1="20" x2="60" y2="170" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
-    <line x1="60" y1="170" x2="460" y2="170" stroke="#023c40" stroke-width="1.5" opacity="0.25"/>
-    <text x="30" y="100" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12" transform="rotate(-90 30 100)">Output quality</text>
-    <text x="260" y="195" text-anchor="middle" fill="#023c40" font-family="'Raleway',sans-serif" font-size="12">Loop iterations</text>
-    <!-- Good plan line -->
-    <path d="M60 150 C120 130 200 70 350 45 L460 40" stroke="#cae7b9" stroke-width="3" fill="none"/>
-    <text x="420" y="32" fill="#cae7b9" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">Good plan</text>
-    <!-- Bad plan line -->
-    <path d="M60 150 C120 145 200 140 350 138 L460 136" stroke="#f3de8a" stroke-width="3" fill="none"/>
-    <text x="420" y="128" fill="#f3de8a" font-family="'Raleway',sans-serif" font-size="11" font-weight="600">Vague ticket</text>
-  </svg>
-  <p><strong>Planning is the leverage point.</strong></p>
+  <p class="muted" style="font-style:normal">&mdash; Ole Ravna</p>
 </div>
 
 <!-- ════════════════════════════════════════════
@@ -173,37 +152,37 @@ Each loop carries forward what came before.</div>
 
 <!-- Slide 10: Section title -->
 <div class="slide section-title" data-notes="Act 2: If the plan is what matters, then planning isn't a phase before development — it IS development.">
-  <div class="act-label">Act II</div>
   <h1>Planning is<br>Development</h1>
 </div>
 
 <!-- Slide 11: Assertion 2 -->
 <div class="slide key-message" data-notes="Second assertion. If planning drives the output, then planning IS the work. Every developer needs to think like an architect — not because coding is dead, but because the skill is elevated.">
   <div class="assertion-num">2</div>
-  <blockquote>
+  <blockquote style="margin-bottom:2rem;max-width:1000px;font-size:clamp(1.5rem,3.2vw,2.6rem)">
     "Planning isn't a phase before development &mdash; it is development. Therefore all developers must become architects."
   </blockquote>
+  <p class="muted" style="font-style:normal">&mdash; Also Ole Ravna</p>
 </div>
 
 <!-- Slide 12: The architect anecdote -->
 <div class="slide" data-notes="In my world — energy, critical infrastructure — the organization is cautious about agentic AI. But as an architect I already plan solutions to business problems and hand them to developers to implement. The irony is — what I do today is exactly what every developer will do with agents.">
-  <h2>The architect shift</h2>
+  <h2>Moving from development to planning</h2>
   <div class="two-col" style="margin-top:1.5rem;max-width:900px">
     <div>
       <h3 style="color:var(--muted)">Before agents</h3>
-      <div class="diagram" style="font-size:clamp(0.65rem,0.9vw,0.82rem)">
+      <div class="diagram" style="font-size:clamp(0.8rem,1.1vw,1rem)">
 Architect  →  plans solution
 Developer  →  writes code
-Reviewer   →  checks code
+Developer  →  verifies code
 
 <span class="hl">Only architects plan.</span></div>
     </div>
     <div>
       <h3 style="color:var(--mint-text)">With agents</h3>
-      <div class="diagram" style="font-size:clamp(0.65rem,0.9vw,0.82rem)">
+      <div class="diagram" style="font-size:clamp(0.8rem,1.1vw,1rem)">
 Developer  →  plans solution
 Agent      →  writes code
-Developer  →  reviews code
+Developer  →  verifies code
 
 <span class="hl">Everyone plans.</span></div>
     </div>
@@ -211,51 +190,54 @@ Developer  →  reviews code
   <p style="margin-top:1.5rem" class="muted">The shift: from "coding" to "planning and refining."</p>
 </div>
 
-<!-- Slide 13: How Lisa plans -->
-<div class="slide" data-notes="Before writing any code, Lisa explores the codebase and generates 5-20 granular steps. Each step has file operations (create/modify/delete), similar implementations to use as templates. Planning assumptions are tracked explicitly with IDs — every decision is recorded.">
-  <h2>How Lisa plans</h2>
-  <p style="margin-bottom:1rem">Before writing code, Lisa generates <span class="badge badge-mint">5&ndash;20 granular steps</span>.</p>
-  <div class="terminal" style="max-width:700px">
-    <div class="terminal-bar">
-      <div class="terminal-dot red"></div>
-      <div class="terminal-dot yellow"></div>
-      <div class="terminal-dot green"></div>
-      <span class="terminal-title">Lisa plan output</span>
-    </div>
-    <div class="terminal-body" style="font-size:clamp(0.6rem,0.85vw,0.78rem)">
-<span class="string">Step 1:</span> Create WebhookController
-<br><span class="dim">&nbsp;&nbsp;Files: CREATE src/controllers/webhook.ts</span>
-<br><span class="dim">&nbsp;&nbsp;Template: src/controllers/notification.ts</span>
-<br>
-<br><span class="string">Step 2:</span> Add WebhookService with retry logic
-<br><span class="dim">&nbsp;&nbsp;Files: CREATE src/services/webhook.ts</span>
-<br><span class="dim">&nbsp;&nbsp;Template: src/services/email.ts</span>
-<br>
-<br><span class="string">Step 3:</span> Add database migration
-<br><span class="dim">&nbsp;&nbsp;Files: CREATE migrations/20250224_webhooks.sql</span>
-<br>
-<br><span class="flag">Assumptions:</span>
-<br><span class="flag">&nbsp;&nbsp;P.1</span> Using existing auth middleware (not new system)
-<br><span class="flag">&nbsp;&nbsp;P.2</span> PostgreSQL for storage (not Redis)
-    </div>
-  </div>
-</div>
-
 <!-- Slide 14: The implication -->
 <div class="slide" data-notes="If planning is development, then the skill every developer needs is planning. That's what architects do — therefore all developers must become architects. This isn't diminishing coding skill — it's elevating the role. You need deep technical understanding to plan well for agents.">
   <h2>The implication</h2>
-  <div style="max-width:700px;margin:0 auto">
+  <div style="max-width:1400px;margin:0 auto">
     <p style="margin-bottom:1.5rem;font-size:clamp(1.1rem,1.8vw,1.5rem)">
-      If planning is development, the skill every developer needs is <em>planning</em>.
-    </p>
-    <p style="margin-bottom:1.5rem;font-size:clamp(1.1rem,1.8vw,1.5rem)">
-      That's what architects do.
+      If planning is development, the skill every developer needs is planning.
     </p>
     <p style="font-size:clamp(1.1rem,1.8vw,1.5rem)">
-      <strong>This isn't diminishing coding skill &mdash; it's elevating the role.</strong><br>
-      <span class="muted">You need deep technical understanding to plan well for agents.</span>
+      This isn't diminishing coding skill, it's elevating the role.
     </p>
   </div>
+</div>
+
+<!-- Slide: Use project management tools -->
+<div class="slide" data-notes="We already have commonly used tools for planning development tasks — project management tools like Linear, Jira, etc. Instead of planning in markdown files, use the tools your team already knows.">
+  <h2>Why do all agent tools use markdown files for planning?</h2>
+  <p style="max-width:800px;font-size:clamp(1.1rem,1.8vw,1.5rem)">
+    Your team already uses <span class="badge badge-mint">project management tools</span> for planning and tracking progress &mdash; so should your agents
+  </p>
+  <p style="margin-top:1.5rem;font-size:clamp(1.1rem,1.8vw,1.5rem)">We wanted to make a simple harness that does this.</p>
+</div>
+
+<!-- Slide: Introducing Lisa CLI -->
+<div class="slide" data-notes="Lisa is an autonomous looping harness built on Claude Code. It uses Linear for planning and progress tracking — the same tool your team already uses for project management.">
+  <h2>Introducing Lisa CLI</h2>
+  <p class="subtitle">An autonomous looping harness using Linear for planning and progress tracking</p>
+  <div style="display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">
+    <div class="terminal" style="max-width:700px;flex:1">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Terminal</span>
+      </div>
+      <div class="terminal-body" style="font-size:clamp(0.65rem,0.9vw,0.8rem)">
+<span class="prompt">❯</span> lisa <span class="string">ENG-123</span>
+<br><span class="flag">[lisa]</span> Starting Lisa for <span class="string">ENG-123</span>
+<br><span class="flag">[lisa]</span> Max iterations: 30, effort: high, model: opus
+<br><span class="flag">[lisa]</span> Git: commit only (no push)
+<br><span class="flag">[lisa]</span> Ticket: Add webhook support for notifications
+<br><span class="flag">[lisa]</span> No existing branches, creating eng-123-add-webhook-sup
+<br><span class="flag">[lisa]</span> Created branch eng-123-add-webhook-sup
+<br><span class="flag">[lisa]</span> No existing state, starting fresh
+<br><span class="flag">[lisa]</span> Planning... <span class="dim">3s (total: 12s)</span>
+      </div>
+    </div>
+  </div>
+  <img src="lisa.png" alt="Lisa and Ralph" style="position:absolute;right:2rem;top:35%;transform:translateY(-50%);height:clamp(250px,40vh,400px);border-radius:12px">
 </div>
 
 <!-- ════════════════════════════════════════════
@@ -264,56 +246,80 @@ Developer  →  reviews code
 
 <!-- Slide 15: Section title -->
 <div class="slide section-title" data-notes="Act 3: So how do you actually build this? Let's look at the building blocks that make autonomous development possible.">
-  <div class="act-label">Act III</div>
   <h1>Building Blocks</h1>
 </div>
 
-<!-- Slide 16: Claude Code as a function -->
-<div class="slide" data-notes="claude --print makes Claude Code headless. Not a chatbot — a building block. Add --json-schema and you get structured output: predictable, parseable responses that your state machine can act on. This is the key differentiator between AI as a chatbot and AI as a component.">
-  <h2>Claude Code as a function</h2>
-  <p style="margin-bottom:1rem">Not a chatbot &mdash; a <span class="badge badge-mint">building block</span>.</p>
-  <div class="two-col" style="gap:1.5rem;max-width:95%">
-    <div>
-      <div class="terminal" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">Headless mode</span>
-        </div>
-        <div class="terminal-body">
+<!-- Slide 16: Claude Code in headless mode -->
+<div class="slide" data-notes="With --print, Claude runs once and exits — no interaction, just output. It works as a function in your code. Add --json-schema and you get structured output: predictable, parseable responses that your state machine can act on. This is the key differentiator between AI as a chatbot and AI as a component.">
+  <h2>Headless Claude Code</h2>
+  <p style="margin-bottom:0.5rem">With <code>--print</code>, Claude runs once and exits — no interaction, just <span class="badge badge-mint">output</span>. It works as a function in your code.</p>
+  <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Bash</span>
+      </div>
+      <div class="terminal-body">
 <span class="comment"># Call Claude, get output</span>
 <br><span class="prompt">$</span> claude <span class="flag">--print</span> <span class="string">"Explain this code"</span>
 <br>
 <br><span class="comment"># Pipe context in</span>
 <br><span class="prompt">$</span> cat src/auth.ts | claude <span class="flag">-p</span> <span class="string">"Security issues?"</span>
-        </div>
       </div>
     </div>
-    <div>
-      <div class="terminal" style="max-width:none">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">Structured output</span>
-        </div>
-        <div class="terminal-body">
-<span class="comment"># Predictable JSON responses</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--output-format</span> json \
-<br>    <span class="flag">--json-schema</span> <span class="string">'{...}'</span> \
-<br>    <span class="string">"Analyze this PR"</span>
-        </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">Python</span>
+      </div>
+      <div class="terminal-body" style="white-space:nowrap;font-size:clamp(0.6rem,0.85vw,0.78rem)">
+<span class="keyword">def</span> <span class="fn">claude</span>(prompt, model, schema):
+<br>&nbsp;&nbsp;cmd = [<span class="string">"claude"</span>, <span class="string">"-p"</span>, <span class="string">"--model"</span>, model, <span class="string">"--json-schema"</span>, json.dumps(schema)]
+<br>&nbsp;&nbsp;result = subprocess.run(cmd, input=prompt, capture_output=<span class="keyword">True</span>, text=<span class="keyword">True</span>)
+<br>&nbsp;&nbsp;<span class="keyword">return</span> json.loads(result.stdout)
       </div>
     </div>
   </div>
 </div>
 
-<!-- Slide 17: Autonomy with control -->
-<div class="slide" data-notes="You need the agent to run without prompting you, but you whitelist exactly which tools it can use. --dangerously-skip-permissions gives full access (sandbox only), --allowed-tools gives precise control. Controlled autonomy.">
-  <h2>Autonomy with control</h2>
+<!-- Slide 16b: Structured output -->
+<div class="slide" data-notes="Structured output makes Claude predictable. Define a JSON schema, get valid JSON back every time. Perfect for pipelines and automation.">
+  <h2>Structured output</h2>
   <div class="terminal" style="margin-top:1rem">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+    </div>
+    <div class="terminal-body">
+<span class="prompt">$</span> ./gradlew test 2&gt;&amp;1 | claude <span class="flag">-p</span> \
+<br>    <span class="flag">--model</span> haiku \
+<br>    <span class="flag">--output-format</span> json \
+<br>    <span class="flag">--json-schema</span> <span class="string">'{</span>
+<br>      <span class="string">"type": "object",</span>
+<br>      <span class="string">"properties": {</span>
+<br>        <span class="string">"passed": { "type": "number", "description": "Passing tests" },</span>
+<br>        <span class="string">"failed": { "type": "number", "description": "Failing tests" },</span>
+<br>        <span class="string">"success": { "type": "boolean", "description": "All tests passed" }</span>
+<br>      <span class="string">}</span>
+<br>    <span class="string">}'</span>
+<br>
+<br><span class="comment"># Output:</span>
+<br>{ <span class="string">"passed"</span>: 47, <span class="string">"failed"</span>: 3, <span class="string">"success"</span>: false }
+    </div>
+  </div>
+  <p class="muted" style="margin-top:0.75rem;font-size:0.85rem">Always valid JSON matching your schema</p>
+</div>
+
+<!-- Slide 17: Autonomy with control -->
+<div class="slide" data-notes="Three levels of permission control. Repo settings.json defines default allowed tools — no flags needed. --permission-mode acceptEdits lets Claude read and write files freely but asks before running commands. --allowed-tools gives precise per-call control over exactly which tools are available.">
+  <h2>Tooling permission</h2>
+  <p style="margin-bottom:0.5rem">Different levels of permission control for headless runs.</p>
+  <div class="terminal" style="margin-top:0.5rem">
     <div class="terminal-bar">
       <div class="terminal-dot red"></div>
       <div class="terminal-dot yellow"></div>
@@ -321,22 +327,26 @@ Developer  →  reviews code
       <span class="terminal-title">Terminal</span>
     </div>
     <div class="terminal-body">
-<span class="comment"># Full access (sandboxed environments only)</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span> <span class="string">"Fix all lint errors"</span>
+<span class="comment"># Uses repo permissions from .claude/settings.json</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="string">"Fix the failing tests"</span>
 <br>
-<br><span class="comment"># Precise control — whitelist tools</span>
-<br><span class="prompt">$</span> claude <span class="flag">-p</span> \
-<br>    <span class="flag">--allowed-tools</span> <span class="string">"Read,Write,Bash(npm test)"</span> \
-<br>    <span class="string">"Fix the failing tests and verify"</span>
+<br><span class="comment"># Accept file edits, prompt for commands</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--permission-mode</span> acceptEdits <span class="string">"Fix the failing tests"</span>
+<br>
+<br><span class="comment"># Precise control — whitelist specific tools</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--allowed-tools</span> <span class="string">"Read,Write,Bash(npm test)"</span> <span class="string">"Fix the failing tests"</span>
+<br>
+<br><span class="comment"># Nuclear option (sandboxed environments only)</span>
+<br><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="flag">--dangerously-skip-permissions</span> <span class="string">"Fix the failing tests"</span>
     </div>
   </div>
 </div>
 
 <!-- Slide 18: Cost and speed -->
-<div class="slide" data-notes="Not every call needs Opus. Use cheap fast models for extraction, parsing, simple checks. Save the heavy model for planning and implementation. Lisa mixes models based on task complexity. --effort low reduces thinking for simple tasks.">
+<div class="slide" data-notes="Not every call needs Opus. Planning, implementation, and review use Opus. Iteration review uses Opus with low effort. Text extraction uses Haiku, and log text generation uses Haiku with low effort. --effort low reduces thinking for simple tasks.">
   <h2>Cost &amp; speed optimization</h2>
   <p style="margin-bottom:1rem">Not every call needs the heavy model.</p>
-  <div class="two-col" style="max-width:850px">
+  <div class="two-col" style="max-width:950px">
     <div>
       <div class="terminal small" style="max-width:none">
         <div class="terminal-bar">
@@ -349,76 +359,67 @@ Developer  →  reviews code
 <span class="comment"># Heavy thinking</span>
 <br><span class="prompt">$</span> claude <span class="flag">--model</span> opus
 <br>
-<br><span class="comment"># Daily work</span>
-<br><span class="prompt">$</span> claude <span class="flag">--model</span> sonnet
-<br>
 <br><span class="comment"># Quick extraction</span>
 <br><span class="prompt">$</span> claude <span class="flag">--model</span> haiku <span class="flag">--effort</span> low
         </div>
       </div>
     </div>
     <div>
-      <div class="diagram" style="font-size:clamp(0.65rem,0.9vw,0.82rem)">
+      <div class="diagram" style="font-size:clamp(0.75rem,1.05vw,0.95rem)">
 <span class="hl">Lisa mixes models:</span>
 
-Planning      → <span class="hl-blue">Opus</span>
-Implementation → <span class="hl-blue">Sonnet</span>
-Extraction    → <span class="hl-yellow">Haiku + low effort</span>
-Review        → <span class="hl-blue">Sonnet</span>
+Planning, implementing, review → <span class="hl-blue">Opus</span>
+Quick iteration review         → <span class="hl-blue">Opus</span> + low effort
+Text extraction                → <span class="hl-yellow">Haiku</span>
+Log &amp; commit generation        → <span class="hl-yellow">Haiku</span> + low effort
 
 Right model for the right task.</div>
     </div>
   </div>
 </div>
 
-<!-- Slide 19: The state machine -->
-<div class="slide" data-notes="Lisa chains these calls into a reliable state machine. Each state transition is explicit, resumable, traceable. If Lisa crashes or you stop it, re-run and it picks up where it left off from the Linear comment state.">
+<!-- Slide 18b: Lisa's full pipeline -->
+<div class="slide" data-notes="Point Lisa at a ticket and this is the full pipeline. Fetch gathers context — ticket, subtasks, blocking relations. Branch creates or resumes a ticket branch. Plan has Claude explore the codebase and create granular steps. Then the loop: execute, verify, commit, save state — up to 30 iterations. Final review does a comprehensive code review with a fix loop. Conclude generates a reviewer guide posted to Linear.">
   <h2>The state machine</h2>
-  <p style="margin-bottom:1rem">Each state transition is explicit, resumable, traceable.</p>
-  <div class="flow" style="margin-top:1rem;gap:0.4rem">
-    <div class="flow-box teal">SELECT_STEP</div>
+  <p style="margin-bottom:0.8rem">Point Lisa at a ticket and it will:</p>
+  <div class="flow" style="gap:0.35rem;margin:0.6rem 0">
+    <div class="flow-box teal">Fetch</div>
     <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">EXECUTE_WORK</div>
+    <div class="flow-box teal">Branch</div>
     <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box yellow">HANDLE_ASSUMPTIONS</div>
+    <div class="flow-box teal">Plan</div>
   </div>
-  <div class="flow" style="gap:0.4rem">
-    <div class="flow-box blue">CHECK_COMPLETION</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box teal">VERIFY_STEP</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box mint">COMMIT_CHANGES</div>
-    <div class="flow-arrow">&rarr;</div>
-    <div class="flow-box yellow">SAVE_STATE</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.3rem;max-width:720px;margin:0.3rem auto;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+    <span>fetch Linear ticket(s)</span>
+    <span>creates new branch</span>
+    <span>split into tasks</span>
   </div>
-  <p style="margin-top:1.5rem">If Lisa crashes &mdash; re-run and it picks up where it left off.</p>
-</div>
-
-<!-- Slide 20: Open source -->
-<div class="slide" data-notes="Lisa is open source. Built on top of Claude Code's headless mode. Check it out on GitHub.">
-  <h2>Lisa CLI</h2>
-  <p class="subtitle">Looping Implementor Saving Assumptions</p>
-  <div style="display:flex;gap:3rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">
-    <div style="text-align:center">
-      <div style="background:white;padding:0.5rem;border-radius:8px;display:inline-block">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/evenly-energy/lisa" alt="QR code to Lisa repo" style="display:block">
-      </div>
-      <p class="muted" style="margin-top:0.5rem">github.com/evenly-energy/lisa</p>
+  <div class="pipeline-loop" style="position:relative;border:2px solid rgba(202,231,185,0.4);border-radius:14px;padding:1.2rem 1.5rem 1rem;margin:0.4rem auto;max-width:720px">
+    <span style="position:absolute;top:-0.7em;left:1.5rem;background:var(--cream);padding:0 0.5em;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--mint-text);letter-spacing:0.05em">LOOP &times;30</span>
+    <div class="flow" style="gap:0.35rem;margin:0.3rem 0">
+      <div class="flow-box mint">Execute</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Verify</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Commit</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-box mint">Save&nbsp;State</div>
     </div>
-    <div>
-      <div class="terminal small">
-        <div class="terminal-bar">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <span class="terminal-title">Terminal</span>
-        </div>
-        <div class="terminal-body" style="font-size:clamp(0.9rem,1.3vw,1.2rem)">
-<span class="prompt">$</span> npm install -g @evenly-energy/lisa
-<br><span class="prompt">$</span> lisa <span class="string">ENG-123</span>
-        </div>
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.3rem;margin-top:0.4rem;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+      <span>implement code</span>
+      <span>tests + review</span>
+      <span>git trailers</span>
+      <span>Linear comment</span>
     </div>
+  </div>
+  <div class="flow" style="gap:0.35rem;margin:0.6rem 0">
+    <div class="flow-box yellow">Final Review</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box yellow">Conclude</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:520px;margin-top:0.3rem;font-size:clamp(0.55rem,0.8vw,0.7rem);font-family:'JetBrains Mono',monospace;color:var(--muted);text-align:center">
+    <span>code review fix loop</span>
+    <span>reviewer guide &rarr; Linear</span>
   </div>
 </div>
 
@@ -428,40 +429,34 @@ Right model for the right task.</div>
 
 <!-- Slide 21: Section title -->
 <div class="slide section-title" data-notes="Act 4: Verification. Agents can generate code, but can they verify it's correct? This is the hardest part.">
-  <div class="act-label">Act IV</div>
   <h1>Verification</h1>
 </div>
 
 <!-- Slide 22: Assertion 3 -->
 <div class="slide key-message" data-notes="Third and final assertion. Static analysis, code quality, test coverage — agents are good at these. But business logic verification — does this solve the right problem? — is still fundamentally hard.">
   <div class="assertion-num">3</div>
-  <blockquote>
+  <blockquote style="font-size:clamp(1.8rem,3.8vw,3.2rem);max-width:900px;margin-bottom:2rem">
     "Agents can generate and analyze code, but verifying business correctness is still unsolved."
   </blockquote>
+  <p class="muted" style="font-style:normal">&mdash; Still Ole Ravna</p>
 </div>
 
 <!-- Slide 23: What agents are good at -->
 <div class="slide" data-notes="Lisa's review phase does this well. Claude checks the implementation against conventions, catches common patterns, flags security issues. Static analysis is a sweet spot for agents.">
   <h2>What agents are good at</h2>
-  <div class="two-col" style="margin-top:1.5rem;max-width:850px">
+  <div class="two-col" style="margin-top:1.5rem;max-width:1200px">
     <div>
       <h3 style="color:var(--mint-text)">Strong</h3>
       <ul>
-        <li>Code quality &amp; conventions</li>
-        <li>Test coverage gaps</li>
-        <li>Security patterns (OWASP)</li>
-        <li>Type errors &amp; null safety</li>
-        <li>N+1 queries &amp; performance</li>
+        <li>Static analysis (quality, types, security)</li>
+        <li>Catching known problems (conventions, N+1, coverage gaps)</li>
       </ul>
     </div>
     <div>
       <h3 style="color:var(--yellow-text)">Weak</h3>
       <ul>
-        <li>Business logic correctness</li>
-        <li>Domain model alignment</li>
-        <li>"Does the webhook fire at the right time?"</li>
-        <li>"Does the event name match the domain?"</li>
-        <li>Verifying the reviewer's judgment</li>
+        <li>"Is this the right solution?"</li>
+        <li>"Did the reviewer have enough context to judge?"</li>
       </ul>
     </div>
   </div>
@@ -506,24 +501,12 @@ Right model for the right task.</div>
   </div>
 </div>
 
-<!-- Slide 25: Honesty -->
-<div class="slide" data-notes="Let's be honest: this is active exploration, not a solved problem. Lisa is meant to explore solutions — not claim to have found them. We're all figuring this out together.">
-  <h2>Honesty</h2>
-  <p style="font-size:clamp(1.2rem,2.2vw,1.8rem);max-width:700px;margin:0 auto">
-    This is <strong>active exploration</strong>, not a solved problem.
-  </p>
-  <p style="margin-top:1.5rem;max-width:600px">
-    Lisa is meant to explore solutions &mdash; not claim to have found them.
-  </p>
-</div>
-
 <!-- ════════════════════════════════════════════
      DEMO PAYOFF (26-28)
      ════════════════════════════════════════════ -->
 
 <!-- Slide 26: Section title -->
 <div class="slide section-title" data-notes="Time to see it in action. Let's check on what we started at the beginning.">
-  <div class="act-label">Payoff</div>
   <h1>Demo</h1>
 </div>
 
@@ -601,7 +584,7 @@ Right model for the right task.</div>
   <h1 style="font-size:clamp(3.5rem,9vw,7rem)">Thank you!</h1>
   <div style="text-align:left;margin-top:2rem">
     <p style="margin-bottom:1rem;font-size:1.4rem"><span style="color:var(--mint)">Ole Ravna</span></p>
-    <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Webstep &amp; Evenly</p>
+    <p style="margin-bottom:0.5rem;font-size:1.2rem" class="muted">Evenly &mdash; ole@evenly.no</p>
   </div>
   <div style="position:absolute;bottom:5rem;left:2rem;text-align:center">
     <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Lisa CLI</p>
@@ -610,18 +593,12 @@ Right model for the right task.</div>
     </div>
     <p style="font-size:0.8rem;margin-top:0.5rem;opacity:0.8">github.com/evenly-energy/lisa</p>
   </div>
-  <div style="position:absolute;bottom:5rem;right:2rem;text-align:center">
-    <p style="color:var(--mint);font-size:0.9rem;margin-bottom:0.5rem">Feedback</p>
-    <div style="background:white;padding:0.5rem;border-radius:8px;display:inline-block">
-      <img src="feedback-qr.png" alt="QR code for feedback" style="display:block;width:120px;height:120px">
-    </div>
-  </div>
 </div>
 
 </div><!-- /presentation -->
 
 <!-- Slide counter -->
-<div class="slide-counter" id="slideCounter">1 / 31</div>
+<div class="slide-counter" id="slideCounter">1 / 30</div>
 
 <!-- Speaker notes -->
 <div class="speaker-notes" id="speakerNotes">
